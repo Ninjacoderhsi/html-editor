@@ -33,6 +33,8 @@ import java.text.*;
 import org.json.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import android.webkit.WebView;
+import android.webkit.WebSettings;
 import android.widget.ListView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
@@ -43,12 +45,15 @@ import android.content.Intent;
 import android.net.Uri;
 import android.widget.AdapterView;
 import android.view.View;
-import io.github.rosemoe.editor.*;
-import io.github.rosemoe.editor.langs.base.*;
-import io.github.rosemoe.editor.langs.python.*;
-import io.github.rosemoe.editor.langs.java.*;
-import io.github.rosemoe.editor.langs.html.*;
 import org.antlr.v4.runtime.*;
+import io.github.rosemoe.sora.*;
+import com.evgenii.jsevaluator.*;
+import io.github.rosemoe.sora.langs.css3.*;
+import io.github.rosemoe.sora.langs.html.*;
+import io.github.rosemoe.sora.langs.java.*;
+import io.github.rosemoe.sora.langs.python.*;
+import io.github.rosemoe.sora.langs.universal.*;
+import io.github.rosemoe.sora.langs.base.*;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.DialogFragment;
@@ -72,8 +77,10 @@ public class Ui1Activity extends AppCompatActivity {
 	private ArrayList<String> liststring = new ArrayList<>();
 	private ArrayList<HashMap<String, Object>> File_map = new ArrayList<>();
 	
-	private LinearLayout linear1;
+	private WebView nanami;
 	private ListView listview1;
+	private LinearLayout linear1;
+	private LinearLayout linear2;
 	private LinearLayout _drawer_linear1;
 	private LinearLayout _drawer_linear2;
 	private LinearLayout _drawer_linear3;
@@ -83,8 +90,11 @@ public class Ui1Activity extends AppCompatActivity {
 	private ScrollView _drawer_vscroll1;
 	private LinearLayout _drawer_linear4;
 	private LinearLayout _drawer_mmm;
+	private LinearLayout _drawer_foxse;
 	private ImageView _drawer_iconweb;
 	private TextView _drawer_web1;
+	private ImageView _drawer_imageview2;
+	private TextView _drawer_textview1;
 	
 	private Intent newint = new Intent();
 	
@@ -129,8 +139,12 @@ public class Ui1Activity extends AppCompatActivity {
 		
 		LinearLayout _nav_view = findViewById(R.id._nav_view);
 		
-		linear1 = findViewById(R.id.linear1);
+		nanami = findViewById(R.id.nanami);
+		nanami.getSettings().setJavaScriptEnabled(true);
+		nanami.getSettings().setSupportZoom(true);
 		listview1 = findViewById(R.id.listview1);
+		linear1 = findViewById(R.id.linear1);
+		linear2 = findViewById(R.id.linear2);
 		_drawer_linear1 = _nav_view.findViewById(R.id.linear1);
 		_drawer_linear2 = _nav_view.findViewById(R.id.linear2);
 		_drawer_linear3 = _nav_view.findViewById(R.id.linear3);
@@ -140,8 +154,11 @@ public class Ui1Activity extends AppCompatActivity {
 		_drawer_vscroll1 = _nav_view.findViewById(R.id.vscroll1);
 		_drawer_linear4 = _nav_view.findViewById(R.id.linear4);
 		_drawer_mmm = _nav_view.findViewById(R.id.mmm);
+		_drawer_foxse = _nav_view.findViewById(R.id.foxse);
 		_drawer_iconweb = _nav_view.findViewById(R.id.iconweb);
 		_drawer_web1 = _nav_view.findViewById(R.id.web1);
+		_drawer_imageview2 = _nav_view.findViewById(R.id.imageview2);
+		_drawer_textview1 = _nav_view.findViewById(R.id.textview1);
 		
 		listview1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
@@ -169,6 +186,14 @@ public class Ui1Activity extends AppCompatActivity {
 				SketchwareUtil.showMessage(getApplicationContext(), "بزودی......");
 			}
 		});
+		
+		_drawer_foxse.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View _view) {
+				newint.setClass(getApplicationContext(), FoxeeditorActivity.class);
+				startActivity(newint);
+			}
+		});
 	}
 	
 	private void initializeLogic() {
@@ -194,6 +219,16 @@ public class Ui1Activity extends AppCompatActivity {
 			listview1.setHorizontalScrollBarEnabled(false);
 			listview1.setVerticalScrollBarEnabled(false);
 			listview1.setOverScrollMode(ListView.OVER_SCROLL_NEVER);
+			nanami.loadUrl("file:///android_asset/namnam/ribbon.html");
+			getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) { Window w = getWindow();  w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS); };
+			getWindow().setNavigationBarColor(Color.parseColor("#7cf7fff7"));
+			
+			
+			getWindow().getDecorView()
+			  .setSystemUiVisibility(
+			    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+			  );
 		}catch(Exception e){
 			 
 		}
@@ -282,7 +317,7 @@ public class Ui1Activity extends AppCompatActivity {
 			textview1.setText(Uri.parse(liststring.get((int)(_position))).getLastPathSegment());
 			{
 				android.graphics.drawable.GradientDrawable SketchUi = new android.graphics.drawable.GradientDrawable();
-				SketchUi.setColor(0x91FFFFFF);SketchUi.setCornerRadius(getDip(6));
+				SketchUi.setColor(0x601C1C1C);SketchUi.setCornerRadius(getDip(6));
 				install.setElevation(getDip(3));
 				install.setBackground(SketchUi);
 			}

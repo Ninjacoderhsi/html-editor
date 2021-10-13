@@ -31,14 +31,33 @@ import android.widget.HorizontalScrollView;
 import android.content.Intent;
 import android.net.Uri;
 import android.view.View;
-import io.github.rosemoe.editor.*;
-import io.github.rosemoe.editor.langs.base.*;
-import io.github.rosemoe.editor.langs.python.*;
-import io.github.rosemoe.editor.langs.java.*;
-import io.github.rosemoe.editor.langs.html.*;
 import org.antlr.v4.runtime.*;
+import io.github.rosemoe.sora.*;
+import com.evgenii.jsevaluator.*;
+import io.github.rosemoe.sora.langs.css3.*;
+import io.github.rosemoe.sora.langs.html.*;
+import io.github.rosemoe.sora.langs.java.*;
+import io.github.rosemoe.sora.langs.python.*;
+import io.github.rosemoe.sora.langs.universal.*;
+import io.github.rosemoe.sora.langs.base.*;
 import androidx.fragment.app.Fragment;
-import io.github.rosemoe.editor.widget.CodeEditor;
+import io.github.rosemoe.sora.widget.schemes.HTMLScheme;
+import io.github.rosemoe.sora.widget.schemes.SchemeDarcula;
+import io.github.rosemoe.sora.widget.schemes.SchemeEclipse;
+import io.github.rosemoe.sora.widget.schemes.SchemeGitHub;
+import io.github.rosemoe.sora.widget.schemes.SchemeNotepadXX;
+import io.github.rosemoe.sora.widget.schemes.SchemeVS2019;
+
+import io.github.rosemoe.sora.langs.EmptyLanguage;
+import io.github.rosemoe.sora.langs.desc.CDescription;
+import io.github.rosemoe.sora.langs.desc.CppDescription;
+import io.github.rosemoe.sora.langs.desc.JavaScriptDescription;
+import io.github.rosemoe.sora.langs.html.HTMLLanguage;
+import io.github.rosemoe.sora.langs.java.JavaLanguage;
+import io.github.rosemoe.sora.langs.python.PythonLanguage;
+import io.github.rosemoe.sora.langs.universal.UniversalLanguage;
+import io.github.rosemoe.sora.widget.CodeEditor;
+import io.github.rosemoe.sora.langs.css3.CSS3Language;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.DialogFragment;
 import androidx.core.content.ContextCompat;
@@ -116,7 +135,7 @@ public class EditorActivity extends AppCompatActivity {
 		allset.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View _view) {
-				((io.github.rosemoe.editor.widget.CodeEditor)editor).selectAll();
+				((io.github.rosemoe.sora.widget.CodeEditor)editor).selectAll();
 				SketchwareUtil.showMessage(getApplicationContext(), getResources().getString(R.string.msg));
 			}
 		});
@@ -130,6 +149,7 @@ public class EditorActivity extends AppCompatActivity {
 				LinearLayout javas = popupView.findViewById(R.id.javas);
 				LinearLayout htmls = popupView.findViewById(R.id.htmls);
 				LinearLayout pys = popupView.findViewById(R.id.pys);
+				LinearLayout css2 = popupView.findViewById(R.id.css2);
 				LinearLayout save = popupView.findViewById(R.id.save);
 				 TextView   zaban32 = popupView.findViewById(R.id.zaban32);
 				
@@ -151,18 +171,29 @@ public class EditorActivity extends AppCompatActivity {
 				
 				pathsave.setText(getResources().getString(R.string.files));
 				
+				 TextView   css1 = popupView.findViewById(R.id.css1);
+				
+				css1.setText("css mod");
+				
 				javas.setOnClickListener(new OnClickListener() { public void onClick(View view) {
-								editor.setEditorLanguage(new io.github.rosemoe.editor.langs.java.JavaLanguage());
+								editor.setEditorLanguage(new JavaLanguage()); 
 								popup.dismiss();
 						} });
 				
 				htmls.setOnClickListener(new OnClickListener() { public void onClick(View view) {
-								editor.setEditorLanguage(new io.github.rosemoe.editor.langs.html.HTMLLanguage());
+								editor.setEditorLanguage(new HTMLLanguage()); 
+						editor.setColorScheme(new HTMLScheme());
 								popup.dismiss();
 						} });
 				
 				pys.setOnClickListener(new OnClickListener() { public void onClick(View view) {
-								editor.setEditorLanguage(new io.github.rosemoe.editor.langs.python.PythonLanguage());
+								editor.setEditorLanguage(new PythonLanguage()); 
+								popup.dismiss();
+						} });
+				
+				css2.setOnClickListener(new OnClickListener() { public void onClick(View view) {
+								editor.setEditorLanguage(new CSS3Language()); 
+						editor.setColorScheme(new SchemeVS2019());
 								popup.dismiss();
 						} });
 				
@@ -201,11 +232,7 @@ public class EditorActivity extends AppCompatActivity {
 		}catch(Exception e){
 			 
 		}
-		io.github.rosemoe.editor.widget.SymbolChannel channel = editor.createNewSymbolChannel();
-		channel.insertSymbol("<html>\n <body>\n  <h1> hi </h1>\n  </body>\n  </html>", (int)"<html>\n <body>\n  <h1> hi </h1>\n  </body>\n  </html>".length());
-		editor.setEditorLanguage(new io.github.rosemoe.editor.langs.html.HTMLLanguage());
 		///editor.setColorScheme(new HTMLScheme());
-		editor.setColorScheme(new io.github.rosemoe.editor.widget.schemes.SchemeVS2019());
 		SymbolInputView inputView = findViewById(R.id.sys);
 		
 		        inputView.bindEditor(editor);
@@ -225,6 +252,7 @@ public class EditorActivity extends AppCompatActivity {
 		} catch (Exception rt) {
 			rt.printStackTrace();
 		}
+		editor.setColorScheme(new SchemeDarcula());
 	}
 	
 	@Override

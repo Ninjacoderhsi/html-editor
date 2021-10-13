@@ -24,13 +24,8 @@ import java.util.*;
 import java.util.regex.*;
 import java.text.*;
 import org.json.*;
-import android.widget.LinearLayout;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.content.Intent;
-import android.net.Uri;
-import java.util.Timer;
-import java.util.TimerTask;
+import android.webkit.WebView;
+import android.webkit.WebSettings;
 import org.antlr.v4.runtime.*;
 import io.github.rosemoe.sora.*;
 import com.evgenii.jsevaluator.*;
@@ -43,95 +38,36 @@ import io.github.rosemoe.sora.langs.base.*;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.DialogFragment;
-import androidx.core.content.ContextCompat;
-import androidx.core.app.ActivityCompat;
-import android.Manifest;
-import android.content.pm.PackageManager;
 
-public class MainActivity extends AppCompatActivity {
+public class FoxeeditorActivity extends AppCompatActivity {
 	
-	private Timer _timer = new Timer();
-	
-	private String path = "";
-	private String file = "";
-	
-	private LinearLayout linear1;
-	private ImageView imageview1;
-	private TextView textview1;
-	private TextView textview2;
-	
-	private Intent in = new Intent();
-	private TimerTask tt;
+	private WebView fox;
 	
 	@Override
 	protected void onCreate(Bundle _savedInstanceState) {
 		super.onCreate(_savedInstanceState);
-		setContentView(R.layout.main);
+		setContentView(R.layout.foxeeditor);
 		initialize(_savedInstanceState);
-		
-		if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED
-		|| ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
-			ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1000);
-		} else {
-			initializeLogic();
-		}
-	}
-	
-	@Override
-	public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-		if (requestCode == 1000) {
-			initializeLogic();
-		}
+		initializeLogic();
 	}
 	
 	private void initialize(Bundle _savedInstanceState) {
-		linear1 = findViewById(R.id.linear1);
-		imageview1 = findViewById(R.id.imageview1);
-		textview1 = findViewById(R.id.textview1);
-		textview2 = findViewById(R.id.textview2);
+		fox = findViewById(R.id.fox);
+		fox.getSettings().setJavaScriptEnabled(true);
+		fox.getSettings().setSupportZoom(true);
 	}
 	
 	private void initializeLogic() {
-		tt = new TimerTask() {
-			@Override
-			public void run() {
-				runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						in.setClass(getApplicationContext(), Ui1Activity.class);
-						startActivity(in);
-					}
-				});
-			}
-		};
-		_timer.schedule(tt, (int)(5000));
-		if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
-			Window w =MainActivity.this.getWindow();
-			w.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-			w.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS); w.setStatusBarColor(0xFF1E1E1E);
-		}
-		textview1.setText(getResources().getString(R.string.main));
-		textview2.setText(getResources().getString(R.string.main1));
-	}
-	
-	@Override
-	public void onStart() {
-		super.onStart();
-		path = "/sdcard/HTMLGO/Projects/001/";
-		file = "htmlgotest.html";
-		if (FileUtil.isExistFile(path)) {
-			FileUtil.makeDir(path);
-		}
-		if (FileUtil.isFile(file)) {
-			FileUtil.writeFile(path, file);
+		try{
+			fox.loadUrl("file:///android_asset/yamyam/editor.html");
+			fox.getSettings().setLoadWithOverviewMode(true); fox.getSettings().setUseWideViewPort(true); final WebSettings webSettings = fox.getSettings(); final String newUserAgent; newUserAgent = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"; webSettings.setUserAgentString(newUserAgent);
+			fox.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+			fox.getSettings().setJavaScriptEnabled(true);
+		}catch(Exception e){
+			 
 		}
 	}
 	
-	@Override
-	public void onBackPressed() {
-		
-	}
 	
 	@Deprecated
 	public void showMessage(String _s) {

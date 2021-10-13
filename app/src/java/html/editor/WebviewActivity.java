@@ -29,12 +29,15 @@ import java.text.*;
 import org.json.*;
 import android.webkit.WebView;
 import android.webkit.WebSettings;
-import io.github.rosemoe.editor.*;
-import io.github.rosemoe.editor.langs.base.*;
-import io.github.rosemoe.editor.langs.python.*;
-import io.github.rosemoe.editor.langs.java.*;
-import io.github.rosemoe.editor.langs.html.*;
 import org.antlr.v4.runtime.*;
+import io.github.rosemoe.sora.*;
+import com.evgenii.jsevaluator.*;
+import io.github.rosemoe.sora.langs.css3.*;
+import io.github.rosemoe.sora.langs.html.*;
+import io.github.rosemoe.sora.langs.java.*;
+import io.github.rosemoe.sora.langs.python.*;
+import io.github.rosemoe.sora.langs.universal.*;
+import io.github.rosemoe.sora.langs.base.*;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.DialogFragment;
@@ -44,6 +47,7 @@ public class WebviewActivity extends AppCompatActivity {
 	private Toolbar _toolbar;
 	private AppBarLayout _app_bar;
 	private CoordinatorLayout _coordinator;
+	private String javascript = "";
 	
 	private WebView webview1;
 	
@@ -125,6 +129,7 @@ public class WebviewActivity extends AppCompatActivity {
 		webview1.loadData(data, "text/html", "UTF-8");
 		webview1.getSettings().setJavaScriptEnabled(true);
 		setTitle(" مشاهده کنید");
+		javascript = getIntent().getStringExtra("res");
 	}
 	
 	
