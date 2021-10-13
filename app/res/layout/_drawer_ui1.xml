@@ -79,6 +79,30 @@
 							android:textSize="12sp"
 							android:textColor="#EF5350" />
 					</LinearLayout>
+					<LinearLayout
+						android:id="@+id/foxse"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:layout_marginTop="2dp"
+						android:layout_marginBottom="2dp"
+						android:padding="8dp"
+						android:gravity="center_vertical"
+						android:orientation="horizontal">
+						<ImageView
+							android:id="@+id/imageview2"
+							android:layout_width="40dp"
+							android:layout_height="40dp"
+							android:src="@drawable/default_image"
+							android:scaleType="centerInside" />
+						<TextView
+							android:id="@+id/textview1"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:padding="8dp"
+							android:text="fox editor beta"
+							android:textSize="14sp"
+							android:textColor="#F44336" />
+					</LinearLayout>
 				</LinearLayout>
 			</ScrollView>
 		</LinearLayout>

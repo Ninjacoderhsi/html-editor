@@ -53,7 +53,7 @@
 					android:layout_weight="1" />
 			</LinearLayout>
 		</LinearLayout>
-		<io.github.rosemoe.editor.widget.CodeEditor
+		<io.github.rosemoe.sora.widget.CodeEditor
 			android:id="@+id/editor"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
