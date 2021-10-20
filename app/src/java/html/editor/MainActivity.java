@@ -32,14 +32,15 @@ import android.net.Uri;
 import java.util.Timer;
 import java.util.TimerTask;
 import org.antlr.v4.runtime.*;
-import io.github.rosemoe.sora.*;
 import com.evgenii.jsevaluator.*;
-import io.github.rosemoe.sora.langs.css3.*;
-import io.github.rosemoe.sora.langs.html.*;
-import io.github.rosemoe.sora.langs.java.*;
-import io.github.rosemoe.sora.langs.python.*;
-import io.github.rosemoe.sora.langs.universal.*;
+import io.github.rosemoe.sora.*;
 import io.github.rosemoe.sora.langs.base.*;
+import io.github.rosemoe.sora.langs.universal.*;
+import io.github.rosemoe.sora.langs.python.*;
+import io.github.rosemoe.sora.langs.java.*;
+import io.github.rosemoe.sora.langs.html.*;
+import io.github.rosemoe.sora.langs.css3.*;
+import io.github.rosemoe.sora.langs.textmate.*;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.DialogFragment;
@@ -113,6 +114,14 @@ public class MainActivity extends AppCompatActivity {
 		}
 		textview1.setText(getResources().getString(R.string.main));
 		textview2.setText(getResources().getString(R.string.main1));
+		try{
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { 
+				Window w = this.getWindow();w.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+				w.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+				w.setStatusBarColor(0xFF222629); w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS); }
+		}catch(Exception e){
+			 
+		}
 	}
 	
 	@Override

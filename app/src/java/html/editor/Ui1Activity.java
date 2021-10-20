@@ -46,14 +46,15 @@ import android.net.Uri;
 import android.widget.AdapterView;
 import android.view.View;
 import org.antlr.v4.runtime.*;
-import io.github.rosemoe.sora.*;
 import com.evgenii.jsevaluator.*;
-import io.github.rosemoe.sora.langs.css3.*;
-import io.github.rosemoe.sora.langs.html.*;
-import io.github.rosemoe.sora.langs.java.*;
-import io.github.rosemoe.sora.langs.python.*;
-import io.github.rosemoe.sora.langs.universal.*;
+import io.github.rosemoe.sora.*;
 import io.github.rosemoe.sora.langs.base.*;
+import io.github.rosemoe.sora.langs.universal.*;
+import io.github.rosemoe.sora.langs.python.*;
+import io.github.rosemoe.sora.langs.java.*;
+import io.github.rosemoe.sora.langs.html.*;
+import io.github.rosemoe.sora.langs.css3.*;
+import io.github.rosemoe.sora.langs.textmate.*;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.DialogFragment;
@@ -73,14 +74,13 @@ public class Ui1Activity extends AppCompatActivity {
 	private double position = 0;
 	private double UpFolder = 0;
 	private String UpFOlder = "";
+	private String url = "";
 	
 	private ArrayList<String> liststring = new ArrayList<>();
 	private ArrayList<HashMap<String, Object>> File_map = new ArrayList<>();
 	
 	private WebView nanami;
 	private ListView listview1;
-	private LinearLayout linear1;
-	private LinearLayout linear2;
 	private LinearLayout _drawer_linear1;
 	private LinearLayout _drawer_linear2;
 	private LinearLayout _drawer_linear3;
@@ -91,12 +91,22 @@ public class Ui1Activity extends AppCompatActivity {
 	private LinearLayout _drawer_linear4;
 	private LinearLayout _drawer_mmm;
 	private LinearLayout _drawer_foxse;
+	private LinearLayout _drawer_terminal;
+	private LinearLayout _drawer_myliner;
+	private LinearLayout _drawer_exit;
 	private ImageView _drawer_iconweb;
 	private TextView _drawer_web1;
-	private ImageView _drawer_imageview2;
+	private ImageView _drawer_fox;
 	private TextView _drawer_textview1;
+	private ImageView _drawer_terminal_image;
+	private TextView _drawer_textview4;
+	private ImageView _drawer_my1;
+	private TextView _drawer_textview2;
+	private ImageView _drawer_exit_run;
+	private TextView _drawer_textview3;
 	
 	private Intent newint = new Intent();
+	private Intent intent = new Intent();
 	
 	@Override
 	protected void onCreate(Bundle _savedInstanceState) {
@@ -143,8 +153,6 @@ public class Ui1Activity extends AppCompatActivity {
 		nanami.getSettings().setJavaScriptEnabled(true);
 		nanami.getSettings().setSupportZoom(true);
 		listview1 = findViewById(R.id.listview1);
-		linear1 = findViewById(R.id.linear1);
-		linear2 = findViewById(R.id.linear2);
 		_drawer_linear1 = _nav_view.findViewById(R.id.linear1);
 		_drawer_linear2 = _nav_view.findViewById(R.id.linear2);
 		_drawer_linear3 = _nav_view.findViewById(R.id.linear3);
@@ -155,10 +163,19 @@ public class Ui1Activity extends AppCompatActivity {
 		_drawer_linear4 = _nav_view.findViewById(R.id.linear4);
 		_drawer_mmm = _nav_view.findViewById(R.id.mmm);
 		_drawer_foxse = _nav_view.findViewById(R.id.foxse);
+		_drawer_terminal = _nav_view.findViewById(R.id.terminal);
+		_drawer_myliner = _nav_view.findViewById(R.id.myliner);
+		_drawer_exit = _nav_view.findViewById(R.id.exit);
 		_drawer_iconweb = _nav_view.findViewById(R.id.iconweb);
 		_drawer_web1 = _nav_view.findViewById(R.id.web1);
-		_drawer_imageview2 = _nav_view.findViewById(R.id.imageview2);
+		_drawer_fox = _nav_view.findViewById(R.id.fox);
 		_drawer_textview1 = _nav_view.findViewById(R.id.textview1);
+		_drawer_terminal_image = _nav_view.findViewById(R.id.terminal_image);
+		_drawer_textview4 = _nav_view.findViewById(R.id.textview4);
+		_drawer_my1 = _nav_view.findViewById(R.id.my1);
+		_drawer_textview2 = _nav_view.findViewById(R.id.textview2);
+		_drawer_exit_run = _nav_view.findViewById(R.id.exit_run);
+		_drawer_textview3 = _nav_view.findViewById(R.id.textview3);
 		
 		listview1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
@@ -170,10 +187,11 @@ public class Ui1Activity extends AppCompatActivity {
 					_RefreshData();
 				}
 				else {
-					if ((liststring.get((int)(_position)).endsWith(".java") || (liststring.get((int)(_position)).endsWith(".js") || (liststring.get((int)(_position)).endsWith(".html") || (liststring.get((int)(_position)).endsWith(".css") || (liststring.get((int)(_position)).endsWith(".py") || ((liststring.get((int)(_position)).endsWith(".cs") || liststring.get((int)(_position)).endsWith(".go")) || (liststring.get((int)(_position)).endsWith(".cpp") || (liststring.get((int)(_position)).endsWith(".lua") || ((liststring.get((int)(_position)).endsWith(".r") || (liststring.get((int)(_position)).endsWith(".php") || (liststring.get((int)(_position)).endsWith(".rb") || liststring.get((int)(_position)).endsWith(".rbw")))) || liststring.get((int)(_position)).endsWith(".sass")))))))))) || true) {
+					if ((liststring.get((int)(_position)).endsWith(".java") || (liststring.get((int)(_position)).endsWith(".js") || (liststring.get((int)(_position)).endsWith(".html") || (liststring.get((int)(_position)).endsWith(".css") || (liststring.get((int)(_position)).endsWith(".py") || ((liststring.get((int)(_position)).endsWith(".cs") || liststring.get((int)(_position)).endsWith(".go")) || (liststring.get((int)(_position)).endsWith(".cpp") || (liststring.get((int)(_position)).endsWith(".lua") || ((liststring.get((int)(_position)).endsWith(".r") || (liststring.get((int)(_position)).endsWith(".php") || (liststring.get((int)(_position)).endsWith(".rb") || liststring.get((int)(_position)).endsWith(".rbw")))) || (liststring.get((int)(_position)).endsWith(".json") || liststring.get((int)(_position)).endsWith(".sass"))))))))))) || true) {
 						newint.setClass(getApplicationContext(), EditorActivity.class);
 						newint.putExtra("path", liststring.get((int)(_position)));
 						newint.putExtra("save", liststring.get((int)(_position)));
+						newint.putExtra("masir", Uri.parse(liststring.get((int)(_position))).getLastPathSegment());
 						startActivity(newint);
 					}
 				}
@@ -194,6 +212,33 @@ public class Ui1Activity extends AppCompatActivity {
 				startActivity(newint);
 			}
 		});
+		
+		_drawer_terminal.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View _view) {
+				intent.setClass(getApplicationContext(), TerminalshellActivity.class);
+				startActivity(intent);
+			}
+		});
+		
+		_drawer_myliner.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View _view) {
+				String url= "myket://comment?id=iir.htmlplus.hsi.ninjacoder";
+				Intent intent = new Intent();
+				intent.setAction(Intent.ACTION_VIEW);
+				intent.setData(Uri.parse(url));
+				startActivity(intent);
+				
+			}
+		});
+		
+		_drawer_exit.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View _view) {
+				finishAffinity();
+			}
+		});
 	}
 	
 	private void initializeLogic() {
@@ -207,7 +252,6 @@ public class Ui1Activity extends AppCompatActivity {
 			}
 			_drawer_mark.setText(getResources().getString(R.string.marks));
 			_drawer_web1.setText(getResources().getString(R.string.web2));
-			_drawer_iconweb.setImageResource(R.drawable.web);
 			LinearLayout _nav_view = (LinearLayout) findViewById(R.id._nav_view);  androidx.drawerlayout.widget.DrawerLayout .LayoutParams params = (androidx.drawerlayout.widget.DrawerLayout .LayoutParams)_nav_view.getLayoutParams();  params.width = (int)getDip((int)250);  params.height = androidx.drawerlayout.widget.DrawerLayout .LayoutParams.MATCH_PARENT;  _nav_view.setLayoutParams(params);
 			 _nav_view.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
 			if (true) {
@@ -216,19 +260,21 @@ public class Ui1Activity extends AppCompatActivity {
 			else {
 						getSupportActionBar().show();
 			}
+			_drawer_iconweb.setImageResource(R.drawable.web);
+			_drawer_my1.setImageResource(R.drawable.google_play);
+			_drawer_exit_run.setImageResource(R.drawable.exitrun);
+			
 			listview1.setHorizontalScrollBarEnabled(false);
 			listview1.setVerticalScrollBarEnabled(false);
 			listview1.setOverScrollMode(ListView.OVER_SCROLL_NEVER);
+			_drawer_fox.setImageResource(R.drawable.firefox);
+			_drawer_terminal_image.setImageResource(R.drawable.terminal_shell);
+		}catch(Exception e){
+			 
+		}
+		try{
 			nanami.loadUrl("file:///android_asset/namnam/ribbon.html");
-			getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) { Window w = getWindow();  w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS); };
-			getWindow().setNavigationBarColor(Color.parseColor("#7cf7fff7"));
-			
-			
-			getWindow().getDecorView()
-			  .setSystemUiVisibility(
-			    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-			  );
+			nanami.getSettings().setJavaScriptEnabled(true);
 		}catch(Exception e){
 			 
 		}
@@ -314,6 +360,10 @@ public class Ui1Activity extends AppCompatActivity {
 			final ImageView imageview1 = _view.findViewById(R.id.imageview1);
 			final TextView textview1 = _view.findViewById(R.id.textview1);
 			
+			textview1.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+			textview1.setMarqueeRepeatLimit(-1);
+			textview1.setSingleLine(true);
+			textview1.setSelected(true); 
 			textview1.setText(Uri.parse(liststring.get((int)(_position))).getLastPathSegment());
 			{
 				android.graphics.drawable.GradientDrawable SketchUi = new android.graphics.drawable.GradientDrawable();
@@ -378,7 +428,12 @@ public class Ui1Activity extends AppCompatActivity {
 																		imageview1.setImageResource(R.drawable.languageruby);
 																	}
 																	else {
-																		
+																		if (liststring.get((int)(_position)).endsWith(".json")) {
+																			imageview1.setImageResource(R.drawable.jsonfiler);
+																		}
+																		else {
+																			
+																		}
 																	}
 																}
 															}

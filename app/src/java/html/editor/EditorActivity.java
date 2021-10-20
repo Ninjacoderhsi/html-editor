@@ -32,14 +32,15 @@ import android.content.Intent;
 import android.net.Uri;
 import android.view.View;
 import org.antlr.v4.runtime.*;
-import io.github.rosemoe.sora.*;
 import com.evgenii.jsevaluator.*;
-import io.github.rosemoe.sora.langs.css3.*;
-import io.github.rosemoe.sora.langs.html.*;
-import io.github.rosemoe.sora.langs.java.*;
-import io.github.rosemoe.sora.langs.python.*;
-import io.github.rosemoe.sora.langs.universal.*;
+import io.github.rosemoe.sora.*;
 import io.github.rosemoe.sora.langs.base.*;
+import io.github.rosemoe.sora.langs.universal.*;
+import io.github.rosemoe.sora.langs.python.*;
+import io.github.rosemoe.sora.langs.java.*;
+import io.github.rosemoe.sora.langs.html.*;
+import io.github.rosemoe.sora.langs.css3.*;
+import io.github.rosemoe.sora.langs.textmate.*;
 import androidx.fragment.app.Fragment;
 import io.github.rosemoe.sora.widget.schemes.HTMLScheme;
 import io.github.rosemoe.sora.widget.schemes.SchemeDarcula;
@@ -68,6 +69,7 @@ import android.content.pm.PackageManager;
 public class EditorActivity extends AppCompatActivity {
 	
 	private FloatingActionButton _fab;
+	private String jsonfixer = "";
 	
 	private LinearLayout linear1;
 	private CodeEditor editor;
@@ -76,6 +78,8 @@ public class EditorActivity extends AppCompatActivity {
 	private ImageView undob;
 	private ImageView erdo;
 	private ImageView allset;
+	private ImageView jsonpather;
+	private ImageView imageview1;
 	private ImageView more;
 	private HorizontalScrollView hscroll2;
 	private SymbolInputView sys;
@@ -114,6 +118,8 @@ public class EditorActivity extends AppCompatActivity {
 		undob = findViewById(R.id.undob);
 		erdo = findViewById(R.id.erdo);
 		allset = findViewById(R.id.allset);
+		jsonpather = findViewById(R.id.jsonpather);
+		imageview1 = findViewById(R.id.imageview1);
 		more = findViewById(R.id.more);
 		hscroll2 = findViewById(R.id.hscroll2);
 		sys = findViewById(R.id.sys);
@@ -137,6 +143,156 @@ public class EditorActivity extends AppCompatActivity {
 			public void onClick(View _view) {
 				((io.github.rosemoe.sora.widget.CodeEditor)editor).selectAll();
 				SketchwareUtil.showMessage(getApplicationContext(), getResources().getString(R.string.msg));
+			}
+		});
+		
+		jsonpather.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View _view) {
+				if (getIntent().getStringExtra("path").contains(".json")) {
+					try{
+						jsonfixer = editor.getText().toString();
+						{
+							final String json_str = jsonfixer;
+							final int indent_width = 4;
+								
+							    final char[] chars = json_str.toCharArray();
+							    final String newline = System.lineSeparator();
+							
+							final boolean[] begin_quotes = {false};
+							   
+							final int[] progres = {0};
+							 
+							final String[] ret = {""};
+							
+							final ProgressDialog prog = new ProgressDialog(EditorActivity.this);
+							
+							prog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+							
+							prog.setIndeterminate(false);
+							
+							prog.setMax(chars.length);
+							
+							prog.setMessage("Formatting in progress...");
+							
+							prog.setCancelable(false);
+							
+							prog.show();
+							new Thread(new Runnable() {
+									@Override
+									public void run() {
+											Looper.prepare();
+											
+											
+											    for (int i = 0, indent = 0; i < chars.length; i++) {
+													        char c = chars[i];
+													
+													prog.setProgress(i);
+													
+													
+													
+													        if (c == '\"') {
+															            ret[0] += c;
+															            begin_quotes[0] = !begin_quotes[0];
+															            continue;
+															        }
+													
+													        if (!begin_quotes[0]) {
+															            switch (c) {
+																	            case '{':
+																	            case '[':
+																	                ret[0] += c + newline + String.format("%" + (indent += indent_width) + "s", "");
+																	                continue;
+																	            case '}':
+																	            case ']':
+																	                ret[0] += newline + ((indent -= indent_width) > 0 ? String.format("%" + indent + "s", "") : "") + c;
+																	                continue;
+																	            case ':':
+																	                ret[0] += c + " ";
+																	                continue;
+																	            case ',':
+																	                ret[0] += c + newline + (indent > 0 ? String.format("%" + indent + "s", "") : "");
+																	                continue;
+																	            default:
+																	                if (Character.isWhitespace(c)) continue;
+																	            }
+															        }
+													
+													        ret[0] += c + (c == '\\' ? "" + chars[++i] : "");
+													    }
+											
+											    
+											
+											
+											runOnUiThread(new Runnable() {
+													@Override
+													public void run() {
+															
+															
+															
+															prog.dismiss();
+															
+											editor.setText(ret[0]);
+															
+															Looper.loop();
+													} 
+													
+											});
+									}
+							}).start();
+							
+						}
+					}catch(Exception e){
+						 
+					}
+				}
+				else {
+					SketchwareUtil.showMessage(getApplicationContext(), "متاسفم فایل شما جیسون نیست (json)");
+				}
+			}
+		});
+		
+		imageview1.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View _view) {
+				ColorPicker seekColorPicker = new ColorPicker(EditorActivity.this);
+				
+						final AlertDialog.Builder buildPicker = new AlertDialog.Builder(EditorActivity.this);
+				
+						final LinearLayout linPicker = new LinearLayout(getApplicationContext());
+				
+				
+						
+				
+				
+				
+						linPicker.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+				{
+					android.graphics.drawable.GradientDrawable SketchUi = new android.graphics.drawable.GradientDrawable();
+					SketchUi.setColor(0xFFFFFFFF);SketchUi.setCornerRadius(getDip(30));
+					SketchUi.setStroke((int)getDip(2) ,0xFF008DCD);
+					linPicker.setElevation(getDip(5));
+					linPicker.setBackground(SketchUi);
+				}
+				
+						linPicker.setOrientation(LinearLayout.VERTICAL);
+				
+						linPicker.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL);
+				
+				
+				
+						buildPicker.setPositiveButton("✔️", new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialogInterface, int i) {
+						imageview1.setColorFilter(Color.parseColor(hex.getText().toString().replace("0xFF" ,"#")), PorterDuff.Mode.MULTIPLY);
+								}
+						});
+				
+				
+				
+						linPicker.addView(seekColorPicker);
+						buildPicker.setView(linPicker);
+						buildPicker.show();
 			}
 		});
 		
@@ -219,9 +375,14 @@ public class EditorActivity extends AppCompatActivity {
 		_fab.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View _view) {
-				ninja.putExtra("res", editor.getText().toString());
-				ninja.setClass(getApplicationContext(), WebviewActivity.class);
-				startActivity(ninja);
+				if (getIntent().getStringExtra("path").contains(".html")) {
+					ninja.putExtra("res", editor.getText().toString());
+					ninja.setClass(getApplicationContext(), WebviewActivity.class);
+					startActivity(ninja);
+				}
+				else {
+					SketchwareUtil.showMessage(getApplicationContext(), "dont html file");
+				}
 			}
 		});
 	}
@@ -229,9 +390,12 @@ public class EditorActivity extends AppCompatActivity {
 	private void initializeLogic() {
 		try{
 			getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE|WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+			editor.setColorScheme(new SchemeVS2019());
 		}catch(Exception e){
 			 
 		}
+		jsonpather.setVisibility(View.VISIBLE);
+		jsonpather.setImageResource(R.drawable.jsonfiler);
 		///editor.setColorScheme(new HTMLScheme());
 		SymbolInputView inputView = findViewById(R.id.sys);
 		
@@ -252,7 +416,131 @@ public class EditorActivity extends AppCompatActivity {
 		} catch (Exception rt) {
 			rt.printStackTrace();
 		}
-		editor.setColorScheme(new SchemeDarcula());
+		if (getIntent().getStringExtra("path").contains(".html")) {
+			editor.setEditorLanguage(new HTMLLanguage()); 
+			editor.setColorScheme(new HTMLScheme());
+			StringBuilder htmlmod = new StringBuilder();
+			
+			try {
+				
+				Scanner scanner = new Scanner(new java.io.File(getIntent().getStringExtra("path"))).useDelimiter("\\Z");
+				while (scanner.hasNext()) {
+					htmlmod .append(scanner.next());
+				}
+				editor.setText(htmlmod );
+			} catch (Exception rt) {
+				rt.printStackTrace();
+			}
+		}
+		else {
+			if (getIntent().getStringExtra("path").contains(".py")) {
+				editor.setColorScheme(new SchemeVS2019());
+				editor.setEditorLanguage(new PythonLanguage()); 
+				StringBuilder pyviewer = new StringBuilder();
+				
+				try {
+					
+					Scanner scanner = new Scanner(new java.io.File(getIntent().getStringExtra("path"))).useDelimiter("\\Z");
+					while (scanner.hasNext()) {
+						pyviewer .append(scanner.next());
+					}
+					editor.setText(pyviewer );
+				} catch (Exception rt) {
+					rt.printStackTrace();
+				}
+			}
+			else {
+				if (getIntent().getStringExtra("path").contains(".cpp")) {
+					editor.setColorScheme(new SchemeVS2019());
+					editor.setEditorLanguage(new UniversalLanguage(new CppDescription()));
+					StringBuilder cpproad = new StringBuilder();
+					
+					try {
+						
+						Scanner scanner = new Scanner(new java.io.File(getIntent().getStringExtra("path"))).useDelimiter("\\Z");
+						while (scanner.hasNext()) {
+							cpproad .append(scanner.next());
+						}
+						editor.setText(cpproad );
+					} catch (Exception rt) {
+						rt.printStackTrace();
+					}
+				}
+				else {
+					if (getIntent().getStringExtra("path").contains(".js")) {
+						editor.setColorScheme(new SchemeVS2019());
+						StringBuilder jsroad = new StringBuilder();
+						
+						try {
+							
+							Scanner scanner = new Scanner(new java.io.File(getIntent().getStringExtra("path"))).useDelimiter("\\Z");
+							while (scanner.hasNext()) {
+								jsroad .append(scanner.next());
+							}
+							editor.setText(jsroad );
+						} catch (Exception rt) {
+							rt.printStackTrace();
+						}
+						editor.setEditorLanguage(new UniversalLanguage(new JavaScriptDescription()));
+					}
+					else {
+						if (getIntent().getStringExtra("path").contains(".java")) {
+							editor.setColorScheme(new SchemeVS2019());
+							StringBuilder javaroad = new StringBuilder();
+							
+							try {
+								
+								Scanner scanner = new Scanner(new java.io.File(getIntent().getStringExtra("path"))).useDelimiter("\\Z");
+								while (scanner.hasNext()) {
+									javaroad .append(scanner.next());
+								}
+								editor.setText(javaroad );
+							} catch (Exception rt) {
+								rt.printStackTrace();
+							}
+							editor.setEditorLanguage(new JavaLanguage()); 
+						}
+						else {
+							if (getIntent().getStringExtra("path").contains(".c")) {
+								editor.setColorScheme(new SchemeVS2019());
+								StringBuilder javaroad = new StringBuilder();
+								
+								try {
+									
+									Scanner scanner = new Scanner(new java.io.File(getIntent().getStringExtra("path"))).useDelimiter("\\Z");
+									while (scanner.hasNext()) {
+										javaroad .append(scanner.next());
+									}
+									editor.setText(javaroad );
+								} catch (Exception rt) {
+									rt.printStackTrace();
+								}
+							}
+							else {
+								if (getIntent().getStringExtra("path").contains(".json")) {
+									editor.setColorScheme(new SchemeVS2019());
+									StringBuilder javaroad = new StringBuilder();
+									
+									try {
+										
+										Scanner scanner = new Scanner(new java.io.File(getIntent().getStringExtra("path"))).useDelimiter("\\Z");
+										while (scanner.hasNext()) {
+											javaroad .append(scanner.next());
+										}
+										editor.setText(javaroad );
+									} catch (Exception rt) {
+										rt.printStackTrace();
+									}
+								}
+								else {
+									
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 	
 	@Override
@@ -269,6 +557,195 @@ public class EditorActivity extends AppCompatActivity {
 			w.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS); w.setStatusBarColor(0xFF1E1E1E);
 		}
 	}
+	public void _librarycolorpicker() {
+	}
+		 private Button btnCopy;
+		 private EditText hex;
+		 private EditText hex2;
+		 private boolean isSimleDialog = false;
+		 public static interface OnColorChangedListener
+		 {
+				 public void onColorChanged(ColorPicker picker, int color);
+			 }
+		 class ColorPicker extends LinearLayout
+		 {
+				 private SeekBar r;
+				 private SeekBar g;
+				 private SeekBar b;
+				 private TextView colorShow;
+				 private SeekBar.OnSeekBarChangeListener listener;
+				 private OnColorChangedListener l;
+				 public ColorPicker(Context c)
+				 {
+						 super(c);
+						 init();
+					 }
+		
+				 private void init(){
+						 setPadding(16, 16, 16, 16);
+						 setGravity(Gravity.CENTER);
+						 setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+						 colorShow = new TextView(getContext());
+						 colorShow.setLayoutParams(new ViewGroup.LayoutParams(60, 60));
+						 addView(colorShow);
+						 listener = new SeekBar.OnSeekBarChangeListener(){
+								 @Override
+								 public void onProgressChanged(SeekBar p1, int p2, boolean p3)
+								 {
+										 int color = Color.rgb(r.getProgress(), g.getProgress(), b.getProgress());
+										 String temp = String.format("0x%08X", color);
+										 String result = temp.substring(2);
+										 hex.setText("#" + result);
+										 hex2.setText("0x" + result);
+										 hex.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);
+										 colorShow.setBackgroundColor(color);
+										 btnCopy.setBackgroundColor(color);
+					
+										 double darkness = 1-(0.299*Color.red(color) + 0.587*Color.green(color) + 0.114*Color.blue(color))/255;
+					
+										 if(darkness<0.5){
+												 btnCopy.setTextColor(Color.BLACK);
+											 }else{
+												 btnCopy.setTextColor(Color.WHITE);
+											 }
+					
+					
+					
+										 if(l != null) l.onColorChanged(ColorPicker.this, color);
+									 }
+								 @Override public void onStartTrackingTouch(SeekBar p1){}
+								 @Override public void onStopTrackingTouch(SeekBar p1){}
+							 };
+						 LinearLayout lay2 = new LinearLayout(getContext());
+						 lay2.setOrientation(VERTICAL);
+						 lay2.setPadding(8, 0, 8, 8);
+						 lay2.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+						 hex = new EditText(getContext());
+						 hex2 = new EditText(getContext());
+						 ViewGroup.MarginLayoutParams params = new ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+						 params.setMargins(16, 0, 16, 0);
+						 hex.setLayoutParams(params);
+						 hex2.setLayoutParams(params);
+						 hex.setCursorVisible(false);
+			
+						 hex.setImeOptions(android.view.inputmethod.EditorInfo.IME_ACTION_DONE);
+						 hex.setText("#000000");
+						 hex2.setText("0xFF000000");
+						 hex.setOnEditorActionListener(new TextView.OnEditorActionListener(){
+								 @Override
+								 public boolean onEditorAction(TextView text, int code, KeyEvent event)
+								 {
+										 try {
+												 int color = Color.parseColor(text.getText().toString());
+												 r.setProgress(Color.red(color));
+												 g.setProgress(Color.green(color));
+												 b.setProgress(Color.blue(color));
+											 } catch(Exception e){
+												 Toast.makeText(getContext(), "Color code is wrong", Toast.LENGTH_SHORT).show();
+											 }
+										 return true;
+									 }
+							 });
+			
+						 btnCopy = new Button(getApplicationContext());
+			
+						 btnCopy.setTextSize(15);
+			
+			if (isSimleDialog) {
+							 if (Locale.getDefault().getDisplayLanguage().equals("العربية")){
+									 btnCopy.setText("نسخ");
+								 } else {
+									 btnCopy.setText("Copy");
+								 }
+							     btnCopy.setClickable(true);
+							 } if (! isSimleDialog) {
+								 btnCopy.setText("");
+								 btnCopy.setClickable(false);
+							 }
+			
+						 btnCopy.setTypeface(Typeface.MONOSPACE);
+			
+						 btnCopy.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+						 
+						 btnCopy.setPadding(0,0,0,0);
+						 
+						 btnCopy.setBackgroundColor(Color.BLACK);
+						 
+						 btnCopy.setTextColor(Color.WHITE);
+			
+						 btnCopy.setOnClickListener(new View.OnClickListener() {
+								 @Override
+								 public void onClick(View view) {
+										 try {
+												 android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+												 ClipData clip = ClipData.newPlainText("label", hex.getText().toString());
+												 clipboard.setPrimaryClip(clip);
+												 Toast.makeText(getApplicationContext(), "✓", Toast.LENGTH_SHORT).show();
+											 } catch (Exception e) {
+												 e.printStackTrace();
+											 }
+									 }
+							 });
+			
+						 lay2.addView(hex);
+						 lay2.addView(hex2);
+						 r = new SeekBar(getContext());
+						 setProgressColor(r, 0xffcc5577);
+						 r.setMax(255);
+						 r.setOnSeekBarChangeListener(listener);
+						 lay2.addView(r);
+						 g = new SeekBar(getContext());
+						 setProgressColor(g, 0xff339977);
+						 g.setMax(255);
+						 g.setOnSeekBarChangeListener(listener);
+						 lay2.addView(g);
+						 b = new SeekBar(getContext());
+						 setProgressColor(b, 0xff6077bb);
+						 b.setMax(255);
+						 b.setOnSeekBarChangeListener(listener);
+						 lay2.addView(b);
+						 addView(lay2);
+						 int color = Color.parseColor(hex.getText().toString());
+						 r.setProgress(Color.red(color));
+						 g.setProgress(Color.green(color));
+						 b.setProgress(Color.blue(color));
+						 colorShow.setBackgroundColor(color);
+						 lay2.addView(btnCopy);
+					 }
+				 public void setColor(int color)
+				 {
+						 hex.setText("#" + String.format("0x%08X", color).substring(2));
+						 hex2.setText("0x" + String.format("0x%08X", color).substring(2));
+						 r.setProgress(Color.red(color));
+						 g.setProgress(Color.green(color));
+						 b.setProgress(Color.blue(color));
+			
+			
+			
+					 }
+				 public int getColor(boolean refreshFromSlider)
+				 {
+						 if(refreshFromSlider)
+							 listener.onProgressChanged(null, 0, false);
+						 return Color.parseColor(hex.getText().toString());
+					 }
+				 public int getColor()
+				 {
+						 return getColor(true);
+					 }
+				 public void setOnColorChangedListener(OnColorChangedListener l)
+				 {
+						 this.l = l;
+					 }
+				 private void setProgressColor(AbsSeekBar bar, int color)
+				 {
+						 bar.getProgressDrawable().setColorFilter(color, PorterDuff.Mode.SRC_IN); bar.getThumb().setColorFilter(color, PorterDuff.Mode.SRC_IN);
+					 }
+			 }
+		 {
+		
+	}
+	
 	
 	@Deprecated
 	public void showMessage(String _s) {
