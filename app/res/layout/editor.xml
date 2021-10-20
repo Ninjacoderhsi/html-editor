@@ -45,6 +45,20 @@
 					android:scaleType="centerInside"
 					android:layout_weight="1" />
 				<ImageView
+					android:id="@+id/jsonpather"
+					android:layout_width="40dp"
+					android:layout_height="40dp"
+					android:src="@drawable/mylego"
+					android:scaleType="centerInside"
+					android:layout_weight="1" />
+				<ImageView
+					android:id="@+id/imageview1"
+					android:layout_width="40dp"
+					android:layout_height="40dp"
+					android:src="@drawable/colorpicker"
+					android:scaleType="centerInside"
+					android:layout_weight="1" />
+				<ImageView
 					android:id="@+id/more"
 					android:layout_width="40dp"
 					android:layout_height="40dp"
