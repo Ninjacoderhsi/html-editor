@@ -27,20 +27,21 @@ import java.text.*;
 import org.json.*;
 import android.widget.LinearLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.HorizontalScrollView;
 import android.content.Intent;
 import android.net.Uri;
 import android.view.View;
-import org.antlr.v4.runtime.*;
-import com.evgenii.jsevaluator.*;
-import io.github.rosemoe.sora.*;
-import io.github.rosemoe.sora.langs.base.*;
 import io.github.rosemoe.sora.langs.universal.*;
+import io.github.rosemoe.sora.langs.textmate.*;
 import io.github.rosemoe.sora.langs.python.*;
 import io.github.rosemoe.sora.langs.java.*;
 import io.github.rosemoe.sora.langs.html.*;
 import io.github.rosemoe.sora.langs.css3.*;
-import io.github.rosemoe.sora.langs.textmate.*;
+import io.github.rosemoe.sora.langs.base.*;
+import com.evgenii.jsevaluator.*;
+import io.github.rosemoe.sora.*;
+import org.antlr.v4.runtime.*;
 import androidx.fragment.app.Fragment;
 import io.github.rosemoe.sora.widget.schemes.HTMLScheme;
 import io.github.rosemoe.sora.widget.schemes.SchemeDarcula;
@@ -59,6 +60,7 @@ import io.github.rosemoe.sora.langs.python.PythonLanguage;
 import io.github.rosemoe.sora.langs.universal.UniversalLanguage;
 import io.github.rosemoe.sora.widget.CodeEditor;
 import io.github.rosemoe.sora.langs.css3.CSS3Language;
+
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.DialogFragment;
 import androidx.core.content.ContextCompat;
@@ -70,6 +72,7 @@ public class EditorActivity extends AppCompatActivity {
 	
 	private FloatingActionButton _fab;
 	private String jsonfixer = "";
+	private String currentWord = "";
 	
 	private LinearLayout linear1;
 	private CodeEditor editor;
@@ -79,8 +82,10 @@ public class EditorActivity extends AppCompatActivity {
 	private ImageView erdo;
 	private ImageView allset;
 	private ImageView jsonpather;
+	private LinearLayout linearColor;
 	private ImageView imageview1;
 	private ImageView more;
+	private TextView textview1;
 	private HorizontalScrollView hscroll2;
 	private SymbolInputView sys;
 	
@@ -119,8 +124,10 @@ public class EditorActivity extends AppCompatActivity {
 		erdo = findViewById(R.id.erdo);
 		allset = findViewById(R.id.allset);
 		jsonpather = findViewById(R.id.jsonpather);
+		linearColor = findViewById(R.id.linearColor);
 		imageview1 = findViewById(R.id.imageview1);
 		more = findViewById(R.id.more);
+		textview1 = findViewById(R.id.textview1);
 		hscroll2 = findViewById(R.id.hscroll2);
 		sys = findViewById(R.id.sys);
 		
@@ -541,6 +548,60 @@ public class EditorActivity extends AppCompatActivity {
 				}
 			}
 		}
+		editor.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View _view) {
+				try { 
+					String textSpan = editor.getText().toString();
+					    final int selection = editor.getCursor().getLeft();
+					    final Pattern pattern = Pattern.compile("(#?)(\\w+)");
+					    final Matcher matcher = pattern.matcher(textSpan);
+					    int start = 0;
+					    int end = 0;
+					
+					   String currentWordddddddd = "";
+					   try { 
+							 while (matcher.find()) {
+									        start = matcher.start();
+									        end = matcher.end();
+									        if (start <= selection && selection <= end) {
+											            currentWordddddddd = textSpan.substring(start, end).toString();
+											            currentWord = currentWordddddddd;
+											        }
+									    }
+					} catch (Exception rr) { 
+							rr.printStackTrace();
+					}
+					if (!currentWord.isEmpty()) {
+						if (currentWord.contains("#")) {
+							try {
+								    
+								linearColor.setBackground(new GradientDrawable() { public GradientDrawable getIns(int a, int b, int c, int d) { this.setCornerRadius(a); this.setStroke(b, c); this.setColor(d); return this; } }.getIns((int)50, (int)4, 0xFF000000, Color.parseColor(currentWord)));
+							} catch (IllegalArgumentException iae) {
+								    
+							}
+						}
+						else {
+							if (currentWord.toLowerCase().contains("0xff")) {
+								try {
+									    
+									currentWord = currentWord.replace("0xff", "#");
+									currentWord = currentWord.replace("0xFF", "#");
+									linearColor.setBackground(new GradientDrawable() { public GradientDrawable getIns(int a, int b, int c, int d) { this.setCornerRadius(a); this.setStroke(b, c); this.setColor(d); return this; } }.getIns((int)50, (int)4, 0xFF000000, Color.parseColor(currentWord)));
+								} catch (IllegalArgumentException iae) {
+									    
+								}
+							}
+							else {
+								editor.getSearcher().search(currentWord);
+							}
+						}
+					}
+				} catch (Exception e){
+					e.printStackTrace();
+				}
+			}
+		});
 	}
 	
 	@Override
