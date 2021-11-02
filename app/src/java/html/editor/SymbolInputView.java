@@ -13,8 +13,10 @@ import android.view.View.*;
 import android.text.*;
 import android.text.style.*;
 
-public class SymbolInputView extends LinearLayout {
+public class SymbolInputView extends LinearLayout { 
 
+private String colora = "";
+private String hsi = "";
 
     public SymbolInputView(Context context) {
         super(context);
@@ -60,8 +62,15 @@ public class SymbolInputView extends LinearLayout {
 			btn.setTypeface(null, android.graphics.Typeface.BOLD);
 			btn.setTextColor(0xFFF44336);
 			btn.setTextSize(15);
-            btn.setBackground(new ColorDrawable(0));
+            ///btn.setBackground(new ColorDrawable(0));
             addView(btn, new LinearLayout.LayoutParams(-2, -1));
+            //////back
+      /////      btn.setBackgroundColor(Color.parseColor(#FF191919));
+///end
+            
+            
+            
+            
              final int finalI = i;
             
 			btn.setOnClickListener(new View.OnClickListener() {
