@@ -63,9 +63,9 @@ public class DebugActivity extends Activity {
 		}
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle("An error occurred");
+		builder.setTitle("خطای ناشناخته");
 		builder.setMessage(madeErrorMessage);
-		builder.setPositiveButton("End Application", new DialogInterface.OnClickListener() {
+		builder.setPositiveButton("پایان برنامه", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				finish();

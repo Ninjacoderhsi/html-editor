@@ -42,22 +42,23 @@ import org.antlr.v4.runtime.*;
 import com.oguzdev.circularfloatingactionmenu.library.*;
 import me.ibrahimsn.particle.*;
 import androidx.fragment.app.Fragment;
+import android.webkit.WebChromeClient;
+import android.view.View.OnLongClickListener;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.DialogFragment;
 
-public class WebviewActivity extends AppCompatActivity {
+public class JscompilerActivity extends AppCompatActivity {
 	
 	private Toolbar _toolbar;
 	private AppBarLayout _app_bar;
 	private CoordinatorLayout _coordinator;
-	private String javascript = "";
 	
-	private WebView webview1;
+	private WebView consoleView;
 	
 	@Override
 	protected void onCreate(Bundle _savedInstanceState) {
 		super.onCreate(_savedInstanceState);
-		setContentView(R.layout.webview);
+		setContentView(R.layout.jscompiler);
 		initialize(_savedInstanceState);
 		initializeLogic();
 	}
@@ -75,30 +76,30 @@ public class WebviewActivity extends AppCompatActivity {
 				onBackPressed();
 			}
 		});
-		webview1 = findViewById(R.id.webview1);
-		webview1.getSettings().setJavaScriptEnabled(true);
-		webview1.getSettings().setSupportZoom(true);
+		consoleView = findViewById(R.id.consoleView);
+		consoleView.getSettings().setJavaScriptEnabled(true);
+		consoleView.getSettings().setSupportZoom(true);
 		
 		//webviewOnProgressChanged
-		webview1.setWebChromeClient(new WebChromeClient() {
+		consoleView.setWebChromeClient(new WebChromeClient() {
 				@Override public void onProgressChanged(WebView view, int _newProgress) {
 					
 				}
 		});
 		
 		//OnDownloadStarted
-		webview1.setDownloadListener(new DownloadListener() {
+		consoleView.setDownloadListener(new DownloadListener() {
 			public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
-				DownloadManager.Request webview1a = new DownloadManager.Request(Uri.parse(url));
-				String webview1b = CookieManager.getInstance().getCookie(url);
-				webview1a.addRequestHeader("cookie", webview1b);
-				webview1a.addRequestHeader("User-Agent", userAgent);
-				webview1a.setDescription("Downloading file...");
-				webview1a.setTitle(URLUtil.guessFileName(url, contentDisposition, mimetype));
-				webview1a.allowScanningByMediaScanner(); webview1a.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED); webview1a.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, URLUtil.guessFileName(url, contentDisposition, mimetype));
+				DownloadManager.Request consoleViewa = new DownloadManager.Request(Uri.parse(url));
+				String consoleViewb = CookieManager.getInstance().getCookie(url);
+				consoleViewa.addRequestHeader("cookie", consoleViewb);
+				consoleViewa.addRequestHeader("User-Agent", userAgent);
+				consoleViewa.setDescription("Downloading file...");
+				consoleViewa.setTitle(URLUtil.guessFileName(url, contentDisposition, mimetype));
+				consoleViewa.allowScanningByMediaScanner(); consoleViewa.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED); consoleViewa.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, URLUtil.guessFileName(url, contentDisposition, mimetype));
 				
-				DownloadManager webview1c = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-				webview1c.enqueue(webview1a);
+				DownloadManager consoleViewc = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+				consoleViewc.enqueue(consoleViewa);
 				showMessage("Downloading File....");
 				BroadcastReceiver onComplete = new BroadcastReceiver() {
 					public void onReceive(Context ctxt, Intent intent) {
@@ -110,7 +111,7 @@ public class WebviewActivity extends AppCompatActivity {
 			}
 		});
 		
-		webview1.setWebViewClient(new WebViewClient() {
+		consoleView.setWebViewClient(new WebViewClient() {
 			@Override
 			public void onPageStarted(WebView _param1, String _param2, Bitmap _param3) {
 				final String _url = _param2;
@@ -128,11 +129,27 @@ public class WebviewActivity extends AppCompatActivity {
 	}
 	
 	private void initializeLogic() {
-		String data = getIntent().getStringExtra("res");
-		webview1.loadData(data, "text/html", "UTF-8");
-		webview1.getSettings().setJavaScriptEnabled(true);
-		setTitle(" مشاهده کنید");
-		javascript = getIntent().getStringExtra("res");
+		String var3 = getIntent().getExtras().getString("sendCode");
+		      StringBuilder var2 = new StringBuilder();
+		      var2.append("<html><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width,  initial-scale=1.0'><title>console</title><link rel=\"stylesheet\" href=\"css/saam.min.css\"><link rel=\"stylesheet\" href=\"css/console.css\"></head><body><div class='coutput content scroll-content' id='log'></div><script>var Console = function(code){var args = [];for(var a in arguments){if(typeof arguments[a] == \"object\"){var c = JSON.stringify(arguments[a]);args.push(c);} else { args.push(arguments[a]);}} document.getElementById('log').innerHTML += `<code class='cline'>${args.join('')}</code>`;};(function runCode() { try { ");
+		      var2.append(var3.replace("console.log", "Console"));
+		      var2.append(" } catch (err){ document.getElementById('log').innerHTML = `<code class='cline cerror'> ! ${err.message} </code>`; } })();</script></body></html>");
+		      String var5 = var2.toString();
+		      WebSettings var4 = consoleView.getSettings();
+		      var4.setJavaScriptEnabled(true);
+		      var4.setDomStorageEnabled(true);
+		      var4.setDatabaseEnabled(true);
+		      var4.setAllowContentAccess(true);
+		      var4.setAllowFileAccess(true);
+		      var4.setAppCacheEnabled(true);
+		      var4.setUseWideViewPort(true);
+		      consoleView.setWebChromeClient(new WebChromeClient());
+		      consoleView.loadDataWithBaseURL("file:///android_asset/core/", var5, "text/html", "utf-8", (String)null);
+		      consoleView.setOnLongClickListener(new OnLongClickListener() {
+				         public boolean onLongClick(View var1) {
+						            return true;
+						         }
+				      });
 	}
 	
 	

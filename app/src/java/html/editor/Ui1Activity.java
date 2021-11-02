@@ -33,8 +33,6 @@ import java.text.*;
 import org.json.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-import android.webkit.WebView;
-import android.webkit.WebSettings;
 import android.widget.ListView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
@@ -49,16 +47,18 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.widget.AdapterView;
 import android.view.View;
-import io.github.rosemoe.sora.langs.universal.*;
-import io.github.rosemoe.sora.langs.textmate.*;
-import io.github.rosemoe.sora.langs.python.*;
-import io.github.rosemoe.sora.langs.java.*;
-import io.github.rosemoe.sora.langs.html.*;
-import io.github.rosemoe.sora.langs.css3.*;
-import io.github.rosemoe.sora.langs.base.*;
-import com.evgenii.jsevaluator.*;
 import io.github.rosemoe.sora.*;
+import com.evgenii.jsevaluator.*;
+import io.github.rosemoe.sora.langs.base.*;
+import io.github.rosemoe.sora.langs.css3.*;
+import io.github.rosemoe.sora.langs.html.*;
+import io.github.rosemoe.sora.langs.java.*;
+import io.github.rosemoe.sora.langs.python.*;
+import io.github.rosemoe.sora.langs.textmate.*;
+import io.github.rosemoe.sora.langs.universal.*;
 import org.antlr.v4.runtime.*;
+import com.oguzdev.circularfloatingactionmenu.library.*;
+import me.ibrahimsn.particle.*;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.DialogFragment;
@@ -66,6 +66,21 @@ import androidx.core.content.ContextCompat;
 import androidx.core.app.ActivityCompat;
 import android.Manifest;
 import android.content.pm.PackageManager;
+import io.github.rosemoe.sora.langs.EmptyLanguage;
+import io.github.rosemoe.sora.langs.desc.CDescription;
+import io.github.rosemoe.sora.langs.desc.CppDescription;
+import io.github.rosemoe.sora.langs.desc.JavaScriptDescription;
+import io.github.rosemoe.sora.langs.html.HTMLLanguage;
+import io.github.rosemoe.sora.langs.java.JavaLanguage;
+import io.github.rosemoe.sora.langs.python.PythonLanguage;
+import io.github.rosemoe.sora.langs.universal.UniversalLanguage;
+import io.github.rosemoe.sora.widget.schemes.HTMLScheme;
+import io.github.rosemoe.sora.widget.schemes.SchemeDarcula;
+import io.github.rosemoe.sora.widget.schemes.SchemeEclipse;
+import io.github.rosemoe.sora.widget.schemes.SchemeGitHub;
+import io.github.rosemoe.sora.widget.schemes.SchemeNotepadXX;
+import io.github.rosemoe.sora.widget.schemes.SchemeVS2019;
+
 
 public class Ui1Activity extends AppCompatActivity {
 	
@@ -80,11 +95,15 @@ public class Ui1Activity extends AppCompatActivity {
 	private String UpFOlder = "";
 	private String url = "";
 	private String filedir = "";
+	private String CreateFolder = "";
+	private String mainfile = "";
 	
 	private ArrayList<String> liststring = new ArrayList<>();
 	private ArrayList<HashMap<String, Object>> File_map = new ArrayList<>();
 	
-	private WebView nanami;
+	private LinearLayout nanami;
+	private LinearLayout RelativeLayout;
+	private LinearLayout linear5;
 	private ListView listview1;
 	private LinearLayout _drawer_linear1;
 	private LinearLayout _drawer_linear2;
@@ -118,6 +137,7 @@ public class Ui1Activity extends AppCompatActivity {
 	private AlertDialog.Builder dialogmain;
 	private SharedPreferences reun;
 	private Intent i = new Intent();
+	private AlertDialog.Builder dialog;
 	
 	@Override
 	protected void onCreate(Bundle _savedInstanceState) {
@@ -162,8 +182,8 @@ public class Ui1Activity extends AppCompatActivity {
 		LinearLayout _nav_view = findViewById(R.id._nav_view);
 		
 		nanami = findViewById(R.id.nanami);
-		nanami.getSettings().setJavaScriptEnabled(true);
-		nanami.getSettings().setSupportZoom(true);
+		RelativeLayout = findViewById(R.id.RelativeLayout);
+		linear5 = findViewById(R.id.linear5);
 		listview1 = findViewById(R.id.listview1);
 		_drawer_linear1 = _nav_view.findViewById(R.id.linear1);
 		_drawer_linear2 = _nav_view.findViewById(R.id.linear2);
@@ -193,6 +213,7 @@ public class Ui1Activity extends AppCompatActivity {
 		_drawer_textview3 = _nav_view.findViewById(R.id.textview3);
 		dialogmain = new AlertDialog.Builder(this);
 		reun = getSharedPreferences("reun", Activity.MODE_PRIVATE);
+		dialog = new AlertDialog.Builder(this);
 		
 		listview1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
@@ -205,11 +226,41 @@ public class Ui1Activity extends AppCompatActivity {
 				}
 				else {
 					if ((liststring.get((int)(_position)).endsWith(".java") || (liststring.get((int)(_position)).endsWith(".js") || (liststring.get((int)(_position)).endsWith(".html") || (liststring.get((int)(_position)).endsWith(".css") || (liststring.get((int)(_position)).endsWith(".py") || ((liststring.get((int)(_position)).endsWith(".cs") || liststring.get((int)(_position)).endsWith(".go")) || (liststring.get((int)(_position)).endsWith(".cpp") || (liststring.get((int)(_position)).endsWith(".lua") || ((liststring.get((int)(_position)).endsWith(".r") || (liststring.get((int)(_position)).endsWith(".php") || (liststring.get((int)(_position)).endsWith(".rb") || liststring.get((int)(_position)).endsWith(".rbw")))) || (liststring.get((int)(_position)).endsWith(".json") || liststring.get((int)(_position)).endsWith(".sass"))))))))))) || (liststring.get((int)(_position)).endsWith(".NET") || (liststring.get((int)(_position)).endsWith(".ts") || (liststring.get((int)(_position)).endsWith(".xml") || (liststring.get((int)(_position)).endsWith(".php") || (liststring.get((int)(_position)).endsWith(".rs") || (liststring.get((int)(_position)).endsWith(".nix") || (liststring.get((int)(_position)).endsWith(".zend") || true)))))))) {
-						newint.setClass(getApplicationContext(), EditorActivity.class);
-						newint.putExtra("path", liststring.get((int)(_position)));
-						newint.putExtra("save", liststring.get((int)(_position)));
-						newint.putExtra("masir", Uri.parse(liststring.get((int)(_position))).getLastPathSegment());
-						startActivity(newint);
+						final AlertDialog dialog1 = new AlertDialog.Builder(Ui1Activity.this).create();
+						View inflate = getLayoutInflater().inflate(R.layout.codeviewmain,null); 
+						dialog1.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+						dialog1.setView(inflate);
+						io.github.rosemoe.sora.widget.CodeEditor codeeditor = (io.github.rosemoe.sora.widget.CodeEditor) inflate.findViewById(R.id.codeeditor);
+						TextView type = (TextView) inflate.findViewById(R.id.type);
+						ImageView getedit = (ImageView) inflate.findViewById(R.id.getedit);
+						ImageView close = (ImageView) inflate.findViewById(R.id.close);
+						type.setText(Uri.parse(liststring.get((int)(_position))).getLastPathSegment());
+						codeeditor.setText(FileUtil.readFile(liststring.get((int)(_position))));
+						codeeditor.setColorScheme(new SchemeGitHub());
+						codeeditor.setEditorLanguage(new JavaLanguage()); 
+						getedit.setOnClickListener(new View.OnClickListener(){ public void onClick(View v){
+										
+									try{
+									newint.setClass(getApplicationContext(), EditorActivity.class);
+									newint.putExtra("path", liststring.get((int)(_position)));
+									newint.putExtra("save", liststring.get((int)(_position)));
+									newint.putExtra("masir", Uri.parse(liststring.get((int)(_position))).getLastPathSegment());
+									startActivity(newint);
+									dialog1.dismiss();
+								}catch(Exception e){
+									 
+								}
+								
+								}
+						});
+						close.setOnClickListener(new View.OnClickListener(){ public void onClick(View v){
+										
+									dialog1.dismiss();
+								
+								}
+						});
+						dialog1.setCancelable(true);
+						dialog1.show();
 					}
 				}
 			}
@@ -278,7 +329,7 @@ public class Ui1Activity extends AppCompatActivity {
 			}
 			_drawer_mark.setText(getResources().getString(R.string.marks));
 			_drawer_web1.setText(getResources().getString(R.string.web2));
-			LinearLayout _nav_view = (LinearLayout) findViewById(R.id._nav_view);  androidx.drawerlayout.widget.DrawerLayout .LayoutParams params = (androidx.drawerlayout.widget.DrawerLayout .LayoutParams)_nav_view.getLayoutParams();  params.width = (int)getDip((int)250);  params.height = androidx.drawerlayout.widget.DrawerLayout .LayoutParams.MATCH_PARENT;  _nav_view.setLayoutParams(params);
+			LinearLayout _nav_view = (LinearLayout) findViewById(R.id._nav_view);  androidx.drawerlayout.widget.DrawerLayout .LayoutParams params = (androidx.drawerlayout.widget.DrawerLayout .LayoutParams)_nav_view.getLayoutParams();  params.width = (int)getDip((int)300);  params.height = androidx.drawerlayout.widget.DrawerLayout .LayoutParams.MATCH_PARENT;  _nav_view.setLayoutParams(params);
 			 _nav_view.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
 			if (true) {
 				     getSupportActionBar().hide();
@@ -296,12 +347,7 @@ public class Ui1Activity extends AppCompatActivity {
 			_drawer_fox.setImageResource(R.drawable.firefox);
 			_drawer_terminal_image.setImageResource(R.drawable.terminal_shell);
 			_drawer_icongithub.setImageResource(R.drawable.github);
-		}catch(Exception e){
-			 
-		}
-		try{
-			nanami.loadUrl("file:///android_asset/namnam/ribbon.html");
-			nanami.getSettings().setJavaScriptEnabled(true);
+			_multifab();
 		}catch(Exception e){
 			 
 		}
@@ -327,6 +373,7 @@ public class Ui1Activity extends AppCompatActivity {
 	public void onStart() {
 		super.onStart();
 		dialogmain = new AlertDialog.Builder(this,AlertDialog.THEME_DEVICE_DEFAULT_DARK);
+		dialog = new AlertDialog.Builder(this,AlertDialog.THEME_DEVICE_DEFAULT_DARK);
 		if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
 			Window w =this.getWindow();
 			w.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -338,7 +385,7 @@ public class Ui1Activity extends AppCompatActivity {
 		Notification.Builder mbuilder = new Notification.Builder(Ui1Activity.this);
 		mbuilder.setSmallIcon(R.drawable.mylego);
 		mbuilder.setContentTitle("Html Go");
-		mbuilder.setContentText("خوش امدید نسخه مورد استفاده شده از برنامه 1.5.6Fj2kmodbyloradreiden");
+		mbuilder.setContentText("خوش امدید نسخه مورد استفاده شده از برنامه ");
 		mbuilder.setDefaults( Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE);
 		
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -376,7 +423,10 @@ public class Ui1Activity extends AppCompatActivity {
 								        
 								       if (permission()) {	   
 									if (FileUtil.isExistFile(filedir)) {
-										FileUtil.makeDir(filedir);
+										
+									}
+									else {
+										SketchwareUtil.showMessage(getApplicationContext(), "خطای دست رسی ب فایل");
 									}          
 											                } else {
 											                  RequestPermission_Dialog();
@@ -391,7 +441,10 @@ public class Ui1Activity extends AppCompatActivity {
 								         } else {
 							
 							if (FileUtil.isExistFile(filedir)) {
-								FileUtil.makeDir(filedir);
+								
+							}
+							else {
+								SketchwareUtil.showMessage(getApplicationContext(), "خطای دست رسی ب فایل");
 							}
 							
 						}
@@ -409,7 +462,7 @@ public class Ui1Activity extends AppCompatActivity {
 					      
 					       
 					    }
-			reun.edit().putString("key", "1").commit();
+			reun.edit().putString("key", "4").commit();
 		}
 		else {
 			
@@ -429,6 +482,7 @@ public class Ui1Activity extends AppCompatActivity {
 			    
 		}
 	}
+	
 	public void _RefreshData() {
 		listview1.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE); listview1.setItemsCanFocus(false);
 		File_map.clear();
@@ -727,6 +781,149 @@ youtube channel : Hichem Soft
 	{
 	}
 	
+	
+	public void _multifab() {
+		ImageView icon = new ImageView(getApplicationContext());
+		icon.setImageDrawable(getResources().getDrawable(R.drawable.tea));
+			
+		com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton actionButton = new com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton.Builder(Ui1Activity.this).setContentView(icon)
+												.build();
+			com.oguzdev.circularfloatingactionmenu.library.SubActionButton.Builder itemBuilder = new com.oguzdev.circularfloatingactionmenu.library.SubActionButton.Builder(Ui1Activity.this);
+		
+		ImageView Iconfile = new ImageView(getApplicationContext()); 
+		
+		Iconfile.setImageDrawable(getResources().getDrawable(R.drawable.file)); 
+		
+		com.oguzdev.circularfloatingactionmenu.library.SubActionButton file = itemBuilder.setContentView(Iconfile).build(); 
+		
+		FrameLayout.LayoutParams fileParams = new FrameLayout.LayoutParams(90, 90);
+		
+		        file.setLayoutParams(fileParams);
+		
+		file.setOnClickListener(new View.OnClickListener() {
+								@Override
+								public void onClick(View _view) {
+				_file();
+				          actionMenu.close(true);
+								}
+						});
+		ImageView Iconfolder = new ImageView(getApplicationContext()); 
+		
+		Iconfolder.setImageDrawable(getResources().getDrawable(R.drawable.foldermk)); 
+		
+		com.oguzdev.circularfloatingactionmenu.library.SubActionButton folder = itemBuilder.setContentView(Iconfolder).build(); 
+		
+		FrameLayout.LayoutParams folderParams = new FrameLayout.LayoutParams(90, 90);
+		
+		        folder.setLayoutParams(folderParams);
+		
+		folder.setOnClickListener(new View.OnClickListener() {
+								@Override
+								public void onClick(View _view) {
+				dialog.setTitle("ساخت پوشه ");
+				dialog.setIcon(R.drawable.tea);
+				dialog.setMessage("ایا میخواهید یک پوشه جدید ایجاد کنید..");
+				final EditText edittext1= new EditText(Ui1Activity.this);
+				LinearLayout.LayoutParams lpar = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+				edittext1.setHint("name folder...");
+				edittext1.setHintTextColor(0xFF000000);
+				edittext1.setTextSize((float)16);
+				edittext1.setTextColor(0xFFF44336);
+				((EditText)edittext1).setError("Error plestype text");
+				edittext1.setLayoutParams(lpar);
+				dialog.setView(edittext1);
+				dialog.setPositiveButton("بله", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface _dialog, int _which) {
+						try{
+							CreateFolder = edittext1.getText().toString();
+							if (!FileUtil.isFile(Folder.concat("/".concat(CreateFolder.concat("/"))))) {
+								FileUtil.makeDir(Folder.concat("/".concat(CreateFolder.concat("/"))));
+								_RefreshData();
+							}
+							else {
+								
+							}
+						}catch(Exception e){
+							 
+						}
+					}
+				});
+				dialog.setNegativeButton("خیر", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface _dialog, int _which) {
+						
+					}
+				});
+				dialog.create().show();
+				          actionMenu.close(true);
+								}
+						});
+		 actionMenu = new com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu.Builder(Ui1Activity.this)
+		
+											.addSubActionView(file)
+		.addSubActionView(folder)
+											.attachTo(actionButton)
+		                  .build();
+		
+		
+	}
+	private com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu actionMenu;
+	{
+	}
+	
+	
+	public void _file() {
+		dialogmain.setTitle("فایل جدید");
+		dialogmain.setIcon(R.drawable.mylego);
+		dialogmain.setMessage("ایا میخواهید یک فایل جدید ایجاد کنید؟");
+		final EditText edittext2= new EditText(Ui1Activity.this);
+		LinearLayout.LayoutParams lparr = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+		edittext2.setHint("name file...");
+		edittext2.setHintTextColor(0xFF000000);
+		edittext2.setTextSize((float)16);
+		edittext2.setTextColor(0xFFF44336);
+		((EditText)edittext2).setError("Error plestype text");
+		edittext2.setLayoutParams(lparr);
+		dialogmain.setView(edittext2);
+		dialogmain.setPositiveButton("بله", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface _dialog, int _which) {
+				try{
+					
+					mainfile = edittext2.getText().toString();
+					if (mainfile.equals("")) {
+						_file();
+					}
+					else {
+						if (!mainfile.contains("/")) {
+							FileUtil.writeFile(Folder.concat("/".concat(mainfile)), "");
+							_RefreshData();
+						}
+						else {
+							if (FileUtil.isExistFile(Folder.concat("/".concat(mainfile)))) {
+								_RefreshData();
+							}
+							else {
+								
+							}
+							_RefreshData();
+						}
+					}
+				}catch(Exception e){
+					 
+				}
+			}
+		});
+		dialogmain.setNegativeButton("خیر", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface _dialog, int _which) {
+				
+			}
+		});
+		dialogmain.create().show();
+	}
+	
 	public class Listview1Adapter extends BaseAdapter {
 		
 		ArrayList<HashMap<String, Object>> _data;
@@ -761,6 +958,7 @@ youtube channel : Hichem Soft
 			final LinearLayout install = _view.findViewById(R.id.install);
 			final ImageView imageview1 = _view.findViewById(R.id.imageview1);
 			final TextView textview1 = _view.findViewById(R.id.textview1);
+			final CheckBox checkbox1 = _view.findViewById(R.id.checkbox1);
 			
 			textview1.setEllipsize(TextUtils.TruncateAt.MARQUEE);
 			textview1.setMarqueeRepeatLimit(-1);
@@ -773,6 +971,7 @@ youtube channel : Hichem Soft
 				install.setElevation(getDip(3));
 				install.setBackground(SketchUi);
 			}
+			Animation animation; animation = AnimationUtils.loadAnimation( getApplicationContext(), android.R.anim.slide_in_left ); animation.setDuration(700); install.startAnimation(animation); animation = null;
 			try{
 				if (FileUtil.isDirectory(liststring.get((int)(_position)))) {
 					imageview1.setImageResource(R.drawable.folder);
@@ -862,12 +1061,7 @@ youtube channel : Hichem Soft
 																										imageview1.setImageResource(R.drawable.latypescript);
 																									}
 																									else {
-																										if ("ADM".startsWith(liststring.get((int)(_position)))) {
-																											imageview1.setImageResource(R.drawable.tea);
-																										}
-																										else {
-																											
-																										}
+																										
 																									}
 																								}
 																							}

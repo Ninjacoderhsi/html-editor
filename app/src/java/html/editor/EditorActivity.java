@@ -32,16 +32,18 @@ import android.widget.HorizontalScrollView;
 import android.content.Intent;
 import android.net.Uri;
 import android.view.View;
-import io.github.rosemoe.sora.langs.universal.*;
-import io.github.rosemoe.sora.langs.textmate.*;
-import io.github.rosemoe.sora.langs.python.*;
-import io.github.rosemoe.sora.langs.java.*;
-import io.github.rosemoe.sora.langs.html.*;
-import io.github.rosemoe.sora.langs.css3.*;
-import io.github.rosemoe.sora.langs.base.*;
-import com.evgenii.jsevaluator.*;
 import io.github.rosemoe.sora.*;
+import com.evgenii.jsevaluator.*;
+import io.github.rosemoe.sora.langs.base.*;
+import io.github.rosemoe.sora.langs.css3.*;
+import io.github.rosemoe.sora.langs.html.*;
+import io.github.rosemoe.sora.langs.java.*;
+import io.github.rosemoe.sora.langs.python.*;
+import io.github.rosemoe.sora.langs.textmate.*;
+import io.github.rosemoe.sora.langs.universal.*;
 import org.antlr.v4.runtime.*;
+import com.oguzdev.circularfloatingactionmenu.library.*;
+import me.ibrahimsn.particle.*;
 import androidx.fragment.app.Fragment;
 import io.github.rosemoe.sora.widget.schemes.HTMLScheme;
 import io.github.rosemoe.sora.widget.schemes.SchemeDarcula;
@@ -73,6 +75,7 @@ public class EditorActivity extends AppCompatActivity {
 	private FloatingActionButton _fab;
 	private String jsonfixer = "";
 	private String currentWord = "";
+	private String colora = "";
 	
 	private LinearLayout linear1;
 	private CodeEditor editor;
@@ -390,6 +393,14 @@ public class EditorActivity extends AppCompatActivity {
 				else {
 					SketchwareUtil.showMessage(getApplicationContext(), "dont html file");
 				}
+				if (getIntent().getStringExtra("path").contains(".js")) {
+					ninja.setClass(getApplicationContext(), JscompilerActivity.class);
+					ninja.putExtra("sendCode", editor.getText().toString());
+					startActivity(ninja);
+				}
+				else {
+					SketchwareUtil.showMessage(getApplicationContext(), "dont js file sorry...");
+				}
 			}
 		});
 	}
@@ -423,92 +434,76 @@ public class EditorActivity extends AppCompatActivity {
 		} catch (Exception rt) {
 			rt.printStackTrace();
 		}
-		if (getIntent().getStringExtra("path").contains(".html")) {
-			editor.setEditorLanguage(new HTMLLanguage()); 
-			editor.setColorScheme(new HTMLScheme());
-			StringBuilder htmlmod = new StringBuilder();
-			
-			try {
-				
-				Scanner scanner = new Scanner(new java.io.File(getIntent().getStringExtra("path"))).useDelimiter("\\Z");
-				while (scanner.hasNext()) {
-					htmlmod .append(scanner.next());
-				}
-				editor.setText(htmlmod );
-			} catch (Exception rt) {
-				rt.printStackTrace();
-			}
-		}
-		else {
-			if (getIntent().getStringExtra("path").contains(".py")) {
-				editor.setColorScheme(new SchemeVS2019());
-				editor.setEditorLanguage(new PythonLanguage()); 
-				StringBuilder pyviewer = new StringBuilder();
+		try{
+			if (getIntent().getStringExtra("path").contains(".html")) {
+				editor.setEditorLanguage(new HTMLLanguage()); 
+				editor.setColorScheme(new HTMLScheme());
+				StringBuilder htmlmod = new StringBuilder();
 				
 				try {
 					
 					Scanner scanner = new Scanner(new java.io.File(getIntent().getStringExtra("path"))).useDelimiter("\\Z");
 					while (scanner.hasNext()) {
-						pyviewer .append(scanner.next());
+						htmlmod .append(scanner.next());
 					}
-					editor.setText(pyviewer );
+					editor.setText(htmlmod );
 				} catch (Exception rt) {
 					rt.printStackTrace();
 				}
 			}
 			else {
-				if (getIntent().getStringExtra("path").contains(".cpp")) {
+				if (getIntent().getStringExtra("path").contains(".py")) {
 					editor.setColorScheme(new SchemeVS2019());
-					editor.setEditorLanguage(new UniversalLanguage(new CppDescription()));
-					StringBuilder cpproad = new StringBuilder();
+					editor.setEditorLanguage(new PythonLanguage()); 
+					StringBuilder pyviewer = new StringBuilder();
 					
 					try {
 						
 						Scanner scanner = new Scanner(new java.io.File(getIntent().getStringExtra("path"))).useDelimiter("\\Z");
 						while (scanner.hasNext()) {
-							cpproad .append(scanner.next());
+							pyviewer .append(scanner.next());
 						}
-						editor.setText(cpproad );
+						editor.setText(pyviewer );
 					} catch (Exception rt) {
 						rt.printStackTrace();
 					}
 				}
 				else {
-					if (getIntent().getStringExtra("path").contains(".js")) {
+					if (getIntent().getStringExtra("path").contains(".cpp")) {
 						editor.setColorScheme(new SchemeVS2019());
-						StringBuilder jsroad = new StringBuilder();
+						editor.setEditorLanguage(new UniversalLanguage(new CppDescription()));
+						StringBuilder cpproad = new StringBuilder();
 						
 						try {
 							
 							Scanner scanner = new Scanner(new java.io.File(getIntent().getStringExtra("path"))).useDelimiter("\\Z");
 							while (scanner.hasNext()) {
-								jsroad .append(scanner.next());
+								cpproad .append(scanner.next());
 							}
-							editor.setText(jsroad );
+							editor.setText(cpproad );
 						} catch (Exception rt) {
 							rt.printStackTrace();
 						}
-						editor.setEditorLanguage(new UniversalLanguage(new JavaScriptDescription()));
 					}
 					else {
-						if (getIntent().getStringExtra("path").contains(".java")) {
+						if (getIntent().getStringExtra("path").contains(".js")) {
 							editor.setColorScheme(new SchemeVS2019());
-							StringBuilder javaroad = new StringBuilder();
+							StringBuilder jsroad = new StringBuilder();
 							
 							try {
 								
 								Scanner scanner = new Scanner(new java.io.File(getIntent().getStringExtra("path"))).useDelimiter("\\Z");
 								while (scanner.hasNext()) {
-									javaroad .append(scanner.next());
+									jsroad .append(scanner.next());
 								}
-								editor.setText(javaroad );
+								editor.setText(jsroad );
 							} catch (Exception rt) {
 								rt.printStackTrace();
 							}
-							editor.setEditorLanguage(new JavaLanguage()); 
+							editor.setEditorLanguage(new UniversalLanguage(new JavaScriptDescription()));
 						}
 						else {
-							if (getIntent().getStringExtra("path").contains(".c")) {
+							if (getIntent().getStringExtra("path").contains(".java")) {
 								editor.setColorScheme(new SchemeVS2019());
 								StringBuilder javaroad = new StringBuilder();
 								
@@ -522,9 +517,10 @@ public class EditorActivity extends AppCompatActivity {
 								} catch (Exception rt) {
 									rt.printStackTrace();
 								}
+								editor.setEditorLanguage(new JavaLanguage()); 
 							}
 							else {
-								if (getIntent().getStringExtra("path").contains(".json")) {
+								if (getIntent().getStringExtra("path").contains(".c")) {
 									editor.setColorScheme(new SchemeVS2019());
 									StringBuilder javaroad = new StringBuilder();
 									
@@ -540,13 +536,50 @@ public class EditorActivity extends AppCompatActivity {
 									}
 								}
 								else {
-									
+									if (getIntent().getStringExtra("path").contains(".json")) {
+										editor.setColorScheme(new SchemeVS2019());
+										StringBuilder javaroad = new StringBuilder();
+										
+										try {
+											
+											Scanner scanner = new Scanner(new java.io.File(getIntent().getStringExtra("path"))).useDelimiter("\\Z");
+											while (scanner.hasNext()) {
+												javaroad .append(scanner.next());
+											}
+											editor.setText(javaroad );
+										} catch (Exception rt) {
+											rt.printStackTrace();
+										}
+									}
+									else {
+										if (getIntent().getStringExtra("path").contains(".xml")) {
+											StringBuilder xmload = new StringBuilder();
+											
+											try {
+												
+												Scanner scanner = new Scanner(new java.io.File(getIntent().getStringExtra("path"))).useDelimiter("\\Z");
+												while (scanner.hasNext()) {
+													xmload .append(scanner.next());
+												}
+												editor.setText(xmload );
+											} catch (Exception rt) {
+												rt.printStackTrace();
+											}
+											editor.setEditorLanguage(new HTMLLanguage()); 
+											editor.setColorScheme(new HTMLScheme());
+										}
+										else {
+											
+										}
+									}
 								}
 							}
 						}
 					}
 				}
 			}
+		}catch(Exception e){
+			e.printStackTrace();
 		}
 		editor.setOnClickListener(new View.OnClickListener() {
 			@Override

@@ -31,16 +31,18 @@ import android.content.Intent;
 import android.net.Uri;
 import java.util.Timer;
 import java.util.TimerTask;
-import io.github.rosemoe.sora.langs.universal.*;
-import io.github.rosemoe.sora.langs.textmate.*;
-import io.github.rosemoe.sora.langs.python.*;
-import io.github.rosemoe.sora.langs.java.*;
-import io.github.rosemoe.sora.langs.html.*;
-import io.github.rosemoe.sora.langs.css3.*;
-import io.github.rosemoe.sora.langs.base.*;
-import com.evgenii.jsevaluator.*;
 import io.github.rosemoe.sora.*;
+import com.evgenii.jsevaluator.*;
+import io.github.rosemoe.sora.langs.base.*;
+import io.github.rosemoe.sora.langs.css3.*;
+import io.github.rosemoe.sora.langs.html.*;
+import io.github.rosemoe.sora.langs.java.*;
+import io.github.rosemoe.sora.langs.python.*;
+import io.github.rosemoe.sora.langs.textmate.*;
+import io.github.rosemoe.sora.langs.universal.*;
 import org.antlr.v4.runtime.*;
+import com.oguzdev.circularfloatingactionmenu.library.*;
+import me.ibrahimsn.particle.*;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.DialogFragment;
@@ -112,9 +114,9 @@ public class MainActivity extends AppCompatActivity {
 			w.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 			w.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS); w.setStatusBarColor(0xFF1E1E1E);
 		}
-		textview1.setText(getResources().getString(R.string.main));
-		textview2.setText(getResources().getString(R.string.main1));
 		try{
+			textview1.setText(getResources().getString(R.string.main));
+			textview2.setText(getResources().getString(R.string.main1));
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { 
 				Window w = this.getWindow();w.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 				w.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
