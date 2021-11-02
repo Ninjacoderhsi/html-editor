@@ -29,6 +29,8 @@
 			android:padding="8dp"
 			android:text="TextView"
 			android:textSize="14sp"
-			android:textColor="#EF5350" />
+			android:textColor="#EF5350"
+			android:singleLine="true"
+			android:enabled="false" />
 	</LinearLayout>
 </LinearLayout>

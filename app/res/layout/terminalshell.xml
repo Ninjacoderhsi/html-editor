@@ -1,0 +1,79 @@
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/_coordinator"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:orientation="vertical">
+		<LinearLayout
+			android:id="@+id/linear1"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:background="#1E1E1E"
+			android:orientation="vertical"
+			android:layout_weight="1">
+			<LinearLayout
+				android:id="@+id/editor"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:padding="8dp"
+				android:orientation="horizontal"
+				android:layout_weight="1">
+				<ScrollView
+					android:id="@+id/vscroll1"
+					android:layout_width="match_parent"
+					android:layout_height="match_parent">
+					<LinearLayout
+						android:id="@+id/linear5"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:padding="8dp"
+						android:orientation="vertical">
+						<EditText
+							android:id="@+id/edittext2"
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:padding="8dp"
+							android:background="@android:color/transparent"
+							android:textSize="14sp"
+							android:textColor="#E64A19"
+							android:hint="run cdm shell typing used vs code"
+							android:textColorHint="#FF5722" />
+					</LinearLayout>
+				</ScrollView>
+			</LinearLayout>
+			<LinearLayout
+				android:id="@+id/linear4"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:padding="8dp"
+				android:orientation="horizontal">
+				<EditText
+					android:id="@+id/edittext1"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:padding="8dp"
+					android:background="@android:color/transparent"
+					android:textSize="14sp"
+					android:textStyle="bold"
+					android:textColor="#D84315"
+					android:hint="Type shell code....."
+					android:textColorHint="#FF5722" />
+			</LinearLayout>
+		</LinearLayout>
+	</LinearLayout>
+	<com.google.android.material.floatingactionbutton.FloatingActionButton
+		android:id="@+id/_fab"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginLeft="16dp"
+		android:layout_marginTop="25dp"
+		android:layout_marginRight="16dp"
+		android:layout_marginBottom="35dp"
+		android:layout_gravity="right|bottom"
+		app:srcCompat="@drawable/mylego" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

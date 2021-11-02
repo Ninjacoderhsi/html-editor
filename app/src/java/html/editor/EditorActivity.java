@@ -27,18 +27,40 @@ import java.text.*;
 import org.json.*;
 import android.widget.LinearLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.HorizontalScrollView;
 import android.content.Intent;
 import android.net.Uri;
 import android.view.View;
-import io.github.rosemoe.editor.*;
-import io.github.rosemoe.editor.langs.base.*;
-import io.github.rosemoe.editor.langs.python.*;
-import io.github.rosemoe.editor.langs.java.*;
-import io.github.rosemoe.editor.langs.html.*;
+import io.github.rosemoe.sora.langs.universal.*;
+import io.github.rosemoe.sora.langs.textmate.*;
+import io.github.rosemoe.sora.langs.python.*;
+import io.github.rosemoe.sora.langs.java.*;
+import io.github.rosemoe.sora.langs.html.*;
+import io.github.rosemoe.sora.langs.css3.*;
+import io.github.rosemoe.sora.langs.base.*;
+import com.evgenii.jsevaluator.*;
+import io.github.rosemoe.sora.*;
 import org.antlr.v4.runtime.*;
 import androidx.fragment.app.Fragment;
-import io.github.rosemoe.editor.widget.CodeEditor;
+import io.github.rosemoe.sora.widget.schemes.HTMLScheme;
+import io.github.rosemoe.sora.widget.schemes.SchemeDarcula;
+import io.github.rosemoe.sora.widget.schemes.SchemeEclipse;
+import io.github.rosemoe.sora.widget.schemes.SchemeGitHub;
+import io.github.rosemoe.sora.widget.schemes.SchemeNotepadXX;
+import io.github.rosemoe.sora.widget.schemes.SchemeVS2019;
+
+import io.github.rosemoe.sora.langs.EmptyLanguage;
+import io.github.rosemoe.sora.langs.desc.CDescription;
+import io.github.rosemoe.sora.langs.desc.CppDescription;
+import io.github.rosemoe.sora.langs.desc.JavaScriptDescription;
+import io.github.rosemoe.sora.langs.html.HTMLLanguage;
+import io.github.rosemoe.sora.langs.java.JavaLanguage;
+import io.github.rosemoe.sora.langs.python.PythonLanguage;
+import io.github.rosemoe.sora.langs.universal.UniversalLanguage;
+import io.github.rosemoe.sora.widget.CodeEditor;
+import io.github.rosemoe.sora.langs.css3.CSS3Language;
+
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.DialogFragment;
 import androidx.core.content.ContextCompat;
@@ -49,6 +71,8 @@ import android.content.pm.PackageManager;
 public class EditorActivity extends AppCompatActivity {
 	
 	private FloatingActionButton _fab;
+	private String jsonfixer = "";
+	private String currentWord = "";
 	
 	private LinearLayout linear1;
 	private CodeEditor editor;
@@ -57,7 +81,11 @@ public class EditorActivity extends AppCompatActivity {
 	private ImageView undob;
 	private ImageView erdo;
 	private ImageView allset;
+	private ImageView jsonpather;
+	private LinearLayout linearColor;
+	private ImageView imageview1;
 	private ImageView more;
+	private TextView textview1;
 	private HorizontalScrollView hscroll2;
 	private SymbolInputView sys;
 	
@@ -95,7 +123,11 @@ public class EditorActivity extends AppCompatActivity {
 		undob = findViewById(R.id.undob);
 		erdo = findViewById(R.id.erdo);
 		allset = findViewById(R.id.allset);
+		jsonpather = findViewById(R.id.jsonpather);
+		linearColor = findViewById(R.id.linearColor);
+		imageview1 = findViewById(R.id.imageview1);
 		more = findViewById(R.id.more);
+		textview1 = findViewById(R.id.textview1);
 		hscroll2 = findViewById(R.id.hscroll2);
 		sys = findViewById(R.id.sys);
 		
@@ -116,8 +148,158 @@ public class EditorActivity extends AppCompatActivity {
 		allset.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View _view) {
-				((io.github.rosemoe.editor.widget.CodeEditor)editor).selectAll();
+				((io.github.rosemoe.sora.widget.CodeEditor)editor).selectAll();
 				SketchwareUtil.showMessage(getApplicationContext(), getResources().getString(R.string.msg));
+			}
+		});
+		
+		jsonpather.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View _view) {
+				if (getIntent().getStringExtra("path").contains(".json")) {
+					try{
+						jsonfixer = editor.getText().toString();
+						{
+							final String json_str = jsonfixer;
+							final int indent_width = 4;
+								
+							    final char[] chars = json_str.toCharArray();
+							    final String newline = System.lineSeparator();
+							
+							final boolean[] begin_quotes = {false};
+							   
+							final int[] progres = {0};
+							 
+							final String[] ret = {""};
+							
+							final ProgressDialog prog = new ProgressDialog(EditorActivity.this);
+							
+							prog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+							
+							prog.setIndeterminate(false);
+							
+							prog.setMax(chars.length);
+							
+							prog.setMessage("Formatting in progress...");
+							
+							prog.setCancelable(false);
+							
+							prog.show();
+							new Thread(new Runnable() {
+									@Override
+									public void run() {
+											Looper.prepare();
+											
+											
+											    for (int i = 0, indent = 0; i < chars.length; i++) {
+													        char c = chars[i];
+													
+													prog.setProgress(i);
+													
+													
+													
+													        if (c == '\"') {
+															            ret[0] += c;
+															            begin_quotes[0] = !begin_quotes[0];
+															            continue;
+															        }
+													
+													        if (!begin_quotes[0]) {
+															            switch (c) {
+																	            case '{':
+																	            case '[':
+																	                ret[0] += c + newline + String.format("%" + (indent += indent_width) + "s", "");
+																	                continue;
+																	            case '}':
+																	            case ']':
+																	                ret[0] += newline + ((indent -= indent_width) > 0 ? String.format("%" + indent + "s", "") : "") + c;
+																	                continue;
+																	            case ':':
+																	                ret[0] += c + " ";
+																	                continue;
+																	            case ',':
+																	                ret[0] += c + newline + (indent > 0 ? String.format("%" + indent + "s", "") : "");
+																	                continue;
+																	            default:
+																	                if (Character.isWhitespace(c)) continue;
+																	            }
+															        }
+													
+													        ret[0] += c + (c == '\\' ? "" + chars[++i] : "");
+													    }
+											
+											    
+											
+											
+											runOnUiThread(new Runnable() {
+													@Override
+													public void run() {
+															
+															
+															
+															prog.dismiss();
+															
+											editor.setText(ret[0]);
+															
+															Looper.loop();
+													} 
+													
+											});
+									}
+							}).start();
+							
+						}
+					}catch(Exception e){
+						 
+					}
+				}
+				else {
+					SketchwareUtil.showMessage(getApplicationContext(), "متاسفم فایل شما جیسون نیست (json)");
+				}
+			}
+		});
+		
+		imageview1.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View _view) {
+				ColorPicker seekColorPicker = new ColorPicker(EditorActivity.this);
+				
+						final AlertDialog.Builder buildPicker = new AlertDialog.Builder(EditorActivity.this);
+				
+						final LinearLayout linPicker = new LinearLayout(getApplicationContext());
+				
+				
+						
+				
+				
+				
+						linPicker.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+				{
+					android.graphics.drawable.GradientDrawable SketchUi = new android.graphics.drawable.GradientDrawable();
+					SketchUi.setColor(0xFFFFFFFF);SketchUi.setCornerRadius(getDip(30));
+					SketchUi.setStroke((int)getDip(2) ,0xFF008DCD);
+					linPicker.setElevation(getDip(5));
+					linPicker.setBackground(SketchUi);
+				}
+				
+						linPicker.setOrientation(LinearLayout.VERTICAL);
+				
+						linPicker.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL);
+				
+				
+				
+						buildPicker.setPositiveButton("✔️", new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialogInterface, int i) {
+						imageview1.setColorFilter(Color.parseColor(hex.getText().toString().replace("0xFF" ,"#")), PorterDuff.Mode.MULTIPLY);
+								}
+						});
+				
+				
+				
+						linPicker.addView(seekColorPicker);
+						buildPicker.setView(linPicker);
+						buildPicker.show();
 			}
 		});
 		
@@ -130,6 +312,7 @@ public class EditorActivity extends AppCompatActivity {
 				LinearLayout javas = popupView.findViewById(R.id.javas);
 				LinearLayout htmls = popupView.findViewById(R.id.htmls);
 				LinearLayout pys = popupView.findViewById(R.id.pys);
+				LinearLayout css2 = popupView.findViewById(R.id.css2);
 				LinearLayout save = popupView.findViewById(R.id.save);
 				 TextView   zaban32 = popupView.findViewById(R.id.zaban32);
 				
@@ -151,18 +334,29 @@ public class EditorActivity extends AppCompatActivity {
 				
 				pathsave.setText(getResources().getString(R.string.files));
 				
+				 TextView   css1 = popupView.findViewById(R.id.css1);
+				
+				css1.setText("css mod");
+				
 				javas.setOnClickListener(new OnClickListener() { public void onClick(View view) {
-								editor.setEditorLanguage(new io.github.rosemoe.editor.langs.java.JavaLanguage());
+								editor.setEditorLanguage(new JavaLanguage()); 
 								popup.dismiss();
 						} });
 				
 				htmls.setOnClickListener(new OnClickListener() { public void onClick(View view) {
-								editor.setEditorLanguage(new io.github.rosemoe.editor.langs.html.HTMLLanguage());
+								editor.setEditorLanguage(new HTMLLanguage()); 
+						editor.setColorScheme(new HTMLScheme());
 								popup.dismiss();
 						} });
 				
 				pys.setOnClickListener(new OnClickListener() { public void onClick(View view) {
-								editor.setEditorLanguage(new io.github.rosemoe.editor.langs.python.PythonLanguage());
+								editor.setEditorLanguage(new PythonLanguage()); 
+								popup.dismiss();
+						} });
+				
+				css2.setOnClickListener(new OnClickListener() { public void onClick(View view) {
+								editor.setEditorLanguage(new CSS3Language()); 
+						editor.setColorScheme(new SchemeVS2019());
 								popup.dismiss();
 						} });
 				
@@ -188,9 +382,14 @@ public class EditorActivity extends AppCompatActivity {
 		_fab.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View _view) {
-				ninja.putExtra("res", editor.getText().toString());
-				ninja.setClass(getApplicationContext(), WebviewActivity.class);
-				startActivity(ninja);
+				if (getIntent().getStringExtra("path").contains(".html")) {
+					ninja.putExtra("res", editor.getText().toString());
+					ninja.setClass(getApplicationContext(), WebviewActivity.class);
+					startActivity(ninja);
+				}
+				else {
+					SketchwareUtil.showMessage(getApplicationContext(), "dont html file");
+				}
 			}
 		});
 	}
@@ -198,14 +397,13 @@ public class EditorActivity extends AppCompatActivity {
 	private void initializeLogic() {
 		try{
 			getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE|WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+			editor.setColorScheme(new SchemeVS2019());
 		}catch(Exception e){
 			 
 		}
-		io.github.rosemoe.editor.widget.SymbolChannel channel = editor.createNewSymbolChannel();
-		channel.insertSymbol("<html>\n <body>\n  <h1> hi </h1>\n  </body>\n  </html>", (int)"<html>\n <body>\n  <h1> hi </h1>\n  </body>\n  </html>".length());
-		editor.setEditorLanguage(new io.github.rosemoe.editor.langs.html.HTMLLanguage());
+		jsonpather.setVisibility(View.VISIBLE);
+		jsonpather.setImageResource(R.drawable.jsonfiler);
 		///editor.setColorScheme(new HTMLScheme());
-		editor.setColorScheme(new io.github.rosemoe.editor.widget.schemes.SchemeVS2019());
 		SymbolInputView inputView = findViewById(R.id.sys);
 		
 		        inputView.bindEditor(editor);
@@ -225,6 +423,185 @@ public class EditorActivity extends AppCompatActivity {
 		} catch (Exception rt) {
 			rt.printStackTrace();
 		}
+		if (getIntent().getStringExtra("path").contains(".html")) {
+			editor.setEditorLanguage(new HTMLLanguage()); 
+			editor.setColorScheme(new HTMLScheme());
+			StringBuilder htmlmod = new StringBuilder();
+			
+			try {
+				
+				Scanner scanner = new Scanner(new java.io.File(getIntent().getStringExtra("path"))).useDelimiter("\\Z");
+				while (scanner.hasNext()) {
+					htmlmod .append(scanner.next());
+				}
+				editor.setText(htmlmod );
+			} catch (Exception rt) {
+				rt.printStackTrace();
+			}
+		}
+		else {
+			if (getIntent().getStringExtra("path").contains(".py")) {
+				editor.setColorScheme(new SchemeVS2019());
+				editor.setEditorLanguage(new PythonLanguage()); 
+				StringBuilder pyviewer = new StringBuilder();
+				
+				try {
+					
+					Scanner scanner = new Scanner(new java.io.File(getIntent().getStringExtra("path"))).useDelimiter("\\Z");
+					while (scanner.hasNext()) {
+						pyviewer .append(scanner.next());
+					}
+					editor.setText(pyviewer );
+				} catch (Exception rt) {
+					rt.printStackTrace();
+				}
+			}
+			else {
+				if (getIntent().getStringExtra("path").contains(".cpp")) {
+					editor.setColorScheme(new SchemeVS2019());
+					editor.setEditorLanguage(new UniversalLanguage(new CppDescription()));
+					StringBuilder cpproad = new StringBuilder();
+					
+					try {
+						
+						Scanner scanner = new Scanner(new java.io.File(getIntent().getStringExtra("path"))).useDelimiter("\\Z");
+						while (scanner.hasNext()) {
+							cpproad .append(scanner.next());
+						}
+						editor.setText(cpproad );
+					} catch (Exception rt) {
+						rt.printStackTrace();
+					}
+				}
+				else {
+					if (getIntent().getStringExtra("path").contains(".js")) {
+						editor.setColorScheme(new SchemeVS2019());
+						StringBuilder jsroad = new StringBuilder();
+						
+						try {
+							
+							Scanner scanner = new Scanner(new java.io.File(getIntent().getStringExtra("path"))).useDelimiter("\\Z");
+							while (scanner.hasNext()) {
+								jsroad .append(scanner.next());
+							}
+							editor.setText(jsroad );
+						} catch (Exception rt) {
+							rt.printStackTrace();
+						}
+						editor.setEditorLanguage(new UniversalLanguage(new JavaScriptDescription()));
+					}
+					else {
+						if (getIntent().getStringExtra("path").contains(".java")) {
+							editor.setColorScheme(new SchemeVS2019());
+							StringBuilder javaroad = new StringBuilder();
+							
+							try {
+								
+								Scanner scanner = new Scanner(new java.io.File(getIntent().getStringExtra("path"))).useDelimiter("\\Z");
+								while (scanner.hasNext()) {
+									javaroad .append(scanner.next());
+								}
+								editor.setText(javaroad );
+							} catch (Exception rt) {
+								rt.printStackTrace();
+							}
+							editor.setEditorLanguage(new JavaLanguage()); 
+						}
+						else {
+							if (getIntent().getStringExtra("path").contains(".c")) {
+								editor.setColorScheme(new SchemeVS2019());
+								StringBuilder javaroad = new StringBuilder();
+								
+								try {
+									
+									Scanner scanner = new Scanner(new java.io.File(getIntent().getStringExtra("path"))).useDelimiter("\\Z");
+									while (scanner.hasNext()) {
+										javaroad .append(scanner.next());
+									}
+									editor.setText(javaroad );
+								} catch (Exception rt) {
+									rt.printStackTrace();
+								}
+							}
+							else {
+								if (getIntent().getStringExtra("path").contains(".json")) {
+									editor.setColorScheme(new SchemeVS2019());
+									StringBuilder javaroad = new StringBuilder();
+									
+									try {
+										
+										Scanner scanner = new Scanner(new java.io.File(getIntent().getStringExtra("path"))).useDelimiter("\\Z");
+										while (scanner.hasNext()) {
+											javaroad .append(scanner.next());
+										}
+										editor.setText(javaroad );
+									} catch (Exception rt) {
+										rt.printStackTrace();
+									}
+								}
+								else {
+									
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		editor.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View _view) {
+				try { 
+					String textSpan = editor.getText().toString();
+					    final int selection = editor.getCursor().getLeft();
+					    final Pattern pattern = Pattern.compile("(#?)(\\w+)");
+					    final Matcher matcher = pattern.matcher(textSpan);
+					    int start = 0;
+					    int end = 0;
+					
+					   String currentWordddddddd = "";
+					   try { 
+							 while (matcher.find()) {
+									        start = matcher.start();
+									        end = matcher.end();
+									        if (start <= selection && selection <= end) {
+											            currentWordddddddd = textSpan.substring(start, end).toString();
+											            currentWord = currentWordddddddd;
+											        }
+									    }
+					} catch (Exception rr) { 
+							rr.printStackTrace();
+					}
+					if (!currentWord.isEmpty()) {
+						if (currentWord.contains("#")) {
+							try {
+								    
+								linearColor.setBackground(new GradientDrawable() { public GradientDrawable getIns(int a, int b, int c, int d) { this.setCornerRadius(a); this.setStroke(b, c); this.setColor(d); return this; } }.getIns((int)50, (int)4, 0xFF000000, Color.parseColor(currentWord)));
+							} catch (IllegalArgumentException iae) {
+								    
+							}
+						}
+						else {
+							if (currentWord.toLowerCase().contains("0xff")) {
+								try {
+									    
+									currentWord = currentWord.replace("0xff", "#");
+									currentWord = currentWord.replace("0xFF", "#");
+									linearColor.setBackground(new GradientDrawable() { public GradientDrawable getIns(int a, int b, int c, int d) { this.setCornerRadius(a); this.setStroke(b, c); this.setColor(d); return this; } }.getIns((int)50, (int)4, 0xFF000000, Color.parseColor(currentWord)));
+								} catch (IllegalArgumentException iae) {
+									    
+								}
+							}
+							else {
+								editor.getSearcher().search(currentWord);
+							}
+						}
+					}
+				} catch (Exception e){
+					e.printStackTrace();
+				}
+			}
+		});
 	}
 	
 	@Override
@@ -241,6 +618,195 @@ public class EditorActivity extends AppCompatActivity {
 			w.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS); w.setStatusBarColor(0xFF1E1E1E);
 		}
 	}
+	public void _librarycolorpicker() {
+	}
+		 private Button btnCopy;
+		 private EditText hex;
+		 private EditText hex2;
+		 private boolean isSimleDialog = false;
+		 public static interface OnColorChangedListener
+		 {
+				 public void onColorChanged(ColorPicker picker, int color);
+			 }
+		 class ColorPicker extends LinearLayout
+		 {
+				 private SeekBar r;
+				 private SeekBar g;
+				 private SeekBar b;
+				 private TextView colorShow;
+				 private SeekBar.OnSeekBarChangeListener listener;
+				 private OnColorChangedListener l;
+				 public ColorPicker(Context c)
+				 {
+						 super(c);
+						 init();
+					 }
+		
+				 private void init(){
+						 setPadding(16, 16, 16, 16);
+						 setGravity(Gravity.CENTER);
+						 setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+						 colorShow = new TextView(getContext());
+						 colorShow.setLayoutParams(new ViewGroup.LayoutParams(60, 60));
+						 addView(colorShow);
+						 listener = new SeekBar.OnSeekBarChangeListener(){
+								 @Override
+								 public void onProgressChanged(SeekBar p1, int p2, boolean p3)
+								 {
+										 int color = Color.rgb(r.getProgress(), g.getProgress(), b.getProgress());
+										 String temp = String.format("0x%08X", color);
+										 String result = temp.substring(2);
+										 hex.setText("#" + result);
+										 hex2.setText("0x" + result);
+										 hex.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);
+										 colorShow.setBackgroundColor(color);
+										 btnCopy.setBackgroundColor(color);
+					
+										 double darkness = 1-(0.299*Color.red(color) + 0.587*Color.green(color) + 0.114*Color.blue(color))/255;
+					
+										 if(darkness<0.5){
+												 btnCopy.setTextColor(Color.BLACK);
+											 }else{
+												 btnCopy.setTextColor(Color.WHITE);
+											 }
+					
+					
+					
+										 if(l != null) l.onColorChanged(ColorPicker.this, color);
+									 }
+								 @Override public void onStartTrackingTouch(SeekBar p1){}
+								 @Override public void onStopTrackingTouch(SeekBar p1){}
+							 };
+						 LinearLayout lay2 = new LinearLayout(getContext());
+						 lay2.setOrientation(VERTICAL);
+						 lay2.setPadding(8, 0, 8, 8);
+						 lay2.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+						 hex = new EditText(getContext());
+						 hex2 = new EditText(getContext());
+						 ViewGroup.MarginLayoutParams params = new ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+						 params.setMargins(16, 0, 16, 0);
+						 hex.setLayoutParams(params);
+						 hex2.setLayoutParams(params);
+						 hex.setCursorVisible(false);
+			
+						 hex.setImeOptions(android.view.inputmethod.EditorInfo.IME_ACTION_DONE);
+						 hex.setText("#000000");
+						 hex2.setText("0xFF000000");
+						 hex.setOnEditorActionListener(new TextView.OnEditorActionListener(){
+								 @Override
+								 public boolean onEditorAction(TextView text, int code, KeyEvent event)
+								 {
+										 try {
+												 int color = Color.parseColor(text.getText().toString());
+												 r.setProgress(Color.red(color));
+												 g.setProgress(Color.green(color));
+												 b.setProgress(Color.blue(color));
+											 } catch(Exception e){
+												 Toast.makeText(getContext(), "Color code is wrong", Toast.LENGTH_SHORT).show();
+											 }
+										 return true;
+									 }
+							 });
+			
+						 btnCopy = new Button(getApplicationContext());
+			
+						 btnCopy.setTextSize(15);
+			
+			if (isSimleDialog) {
+							 if (Locale.getDefault().getDisplayLanguage().equals("العربية")){
+									 btnCopy.setText("نسخ");
+								 } else {
+									 btnCopy.setText("Copy");
+								 }
+							     btnCopy.setClickable(true);
+							 } if (! isSimleDialog) {
+								 btnCopy.setText("");
+								 btnCopy.setClickable(false);
+							 }
+			
+						 btnCopy.setTypeface(Typeface.MONOSPACE);
+			
+						 btnCopy.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+						 
+						 btnCopy.setPadding(0,0,0,0);
+						 
+						 btnCopy.setBackgroundColor(Color.BLACK);
+						 
+						 btnCopy.setTextColor(Color.WHITE);
+			
+						 btnCopy.setOnClickListener(new View.OnClickListener() {
+								 @Override
+								 public void onClick(View view) {
+										 try {
+												 android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+												 ClipData clip = ClipData.newPlainText("label", hex.getText().toString());
+												 clipboard.setPrimaryClip(clip);
+												 Toast.makeText(getApplicationContext(), "✓", Toast.LENGTH_SHORT).show();
+											 } catch (Exception e) {
+												 e.printStackTrace();
+											 }
+									 }
+							 });
+			
+						 lay2.addView(hex);
+						 lay2.addView(hex2);
+						 r = new SeekBar(getContext());
+						 setProgressColor(r, 0xffcc5577);
+						 r.setMax(255);
+						 r.setOnSeekBarChangeListener(listener);
+						 lay2.addView(r);
+						 g = new SeekBar(getContext());
+						 setProgressColor(g, 0xff339977);
+						 g.setMax(255);
+						 g.setOnSeekBarChangeListener(listener);
+						 lay2.addView(g);
+						 b = new SeekBar(getContext());
+						 setProgressColor(b, 0xff6077bb);
+						 b.setMax(255);
+						 b.setOnSeekBarChangeListener(listener);
+						 lay2.addView(b);
+						 addView(lay2);
+						 int color = Color.parseColor(hex.getText().toString());
+						 r.setProgress(Color.red(color));
+						 g.setProgress(Color.green(color));
+						 b.setProgress(Color.blue(color));
+						 colorShow.setBackgroundColor(color);
+						 lay2.addView(btnCopy);
+					 }
+				 public void setColor(int color)
+				 {
+						 hex.setText("#" + String.format("0x%08X", color).substring(2));
+						 hex2.setText("0x" + String.format("0x%08X", color).substring(2));
+						 r.setProgress(Color.red(color));
+						 g.setProgress(Color.green(color));
+						 b.setProgress(Color.blue(color));
+			
+			
+			
+					 }
+				 public int getColor(boolean refreshFromSlider)
+				 {
+						 if(refreshFromSlider)
+							 listener.onProgressChanged(null, 0, false);
+						 return Color.parseColor(hex.getText().toString());
+					 }
+				 public int getColor()
+				 {
+						 return getColor(true);
+					 }
+				 public void setOnColorChangedListener(OnColorChangedListener l)
+				 {
+						 this.l = l;
+					 }
+				 private void setProgressColor(AbsSeekBar bar, int color)
+				 {
+						 bar.getProgressDrawable().setColorFilter(color, PorterDuff.Mode.SRC_IN); bar.getThumb().setColorFilter(color, PorterDuff.Mode.SRC_IN);
+					 }
+			 }
+		 {
+		
+	}
+	
 	
 	@Deprecated
 	public void showMessage(String _s) {
