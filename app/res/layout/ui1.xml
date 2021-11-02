@@ -27,22 +27,33 @@
 			android:layout_height="match_parent"
 			android:orientation="vertical"
 			app:layout_behavior="@string/appbar_scrolling_view_behavior">
-			<WebView
+			<LinearLayout
 				android:id="@+id/nanami"
 				android:layout_width="match_parent"
 				android:layout_height="match_parent"
-				android:padding="5dp"
 				android:background="#1E1E1E"
 				android:orientation="vertical">
-				<ListView
-					android:id="@+id/listview1"
+				<LinearLayout
+					android:id="@+id/RelativeLayout"
 					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:padding="8dp"
-					android:dividerHeight="0dp"
-					android:divider="@null"
-					android:choiceMode="none" />
-			</WebView>
+					android:layout_height="match_parent"
+					android:orientation="vertical">
+					<LinearLayout
+						android:id="@+id/linear5"
+						android:layout_width="match_parent"
+						android:layout_height="match_parent"
+						android:orientation="vertical">
+						<ListView
+							android:id="@+id/listview1"
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:padding="8dp"
+							android:dividerHeight="0dp"
+							android:divider="@null"
+							android:choiceMode="none" />
+					</LinearLayout>
+				</LinearLayout>
+			</LinearLayout>
 		</LinearLayout>
 	</androidx.coordinatorlayout.widget.CoordinatorLayout>
 	<LinearLayout

@@ -51,6 +51,22 @@
 					android:src="@drawable/mylego"
 					android:scaleType="centerInside"
 					android:layout_weight="1" />
+				<LinearLayout
+					android:id="@+id/linearColor"
+					android:layout_width="40dp"
+					android:layout_height="40dp"
+					android:padding="2dp"
+					android:gravity="center_horizontal|bottom"
+					android:orientation="horizontal">
+					<TextView
+						android:id="@+id/textview1"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:padding="8dp"
+						android:text="C"
+						android:textSize="14sp"
+						android:textColor="#FFFFFF" />
+				</LinearLayout>
 				<ImageView
 					android:id="@+id/imageview1"
 					android:layout_width="40dp"
