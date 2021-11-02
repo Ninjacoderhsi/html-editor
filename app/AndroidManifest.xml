@@ -18,8 +18,7 @@
 			android:name=".MainActivity"
 			android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
 			android:hardwareAccelerated="true"
-			android:supportsPictureInPicture="true"
-			android:screenOrientation="portrait">
+			android:supportsPictureInPicture="true">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
@@ -29,22 +28,29 @@
 			android:name=".Ui1Activity"
 			android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
 			android:hardwareAccelerated="true"
-			android:supportsPictureInPicture="true"
-			android:screenOrientation="portrait" />
+			android:supportsPictureInPicture="true" />
 		<activity
 			android:name=".EditorActivity"
 			android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
 			android:hardwareAccelerated="true"
-			android:supportsPictureInPicture="true"
-			android:screenOrientation="portrait" />
+			android:supportsPictureInPicture="true" />
 		<activity
 			android:name=".WebviewActivity"
 			android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
 			android:hardwareAccelerated="true"
-			android:supportsPictureInPicture="true"
-			android:screenOrientation="portrait" />
+			android:supportsPictureInPicture="true" />
 		<activity
 			android:name=".FoxeeditorActivity"
+			android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
+			android:hardwareAccelerated="true"
+			android:supportsPictureInPicture="true" />
+		<activity
+			android:name=".TerminalshellActivity"
+			android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
+			android:hardwareAccelerated="true"
+			android:supportsPictureInPicture="true" />
+		<activity
+			android:name=".JscompilerActivity"
 			android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
 			android:hardwareAccelerated="true"
 			android:supportsPictureInPicture="true"
